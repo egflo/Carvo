@@ -10,8 +10,22 @@ import { Location } from '@angular/common';
   templateUrl: './auto.component.html',
   styleUrls: ['./auto.component.css']
 })
+
 export class AutoComponent implements OnInit {
   autoObs!: Observable<Auto>;
+  auto: Auto|undefined;
+
+  center: google.maps.LatLngLiteral = {lat: 50.06465, lng: 19.94498};
+  options: google.maps.MapOptions = {
+    mapTypeId: 'hybrid',
+    zoomControl: false,
+    scrollwheel: false,
+    disableDoubleClickZoom: true,
+    maxZoom: 15,
+    minZoom: 8,
+  }
+  zoom: number = 12;
+
 
   constructor(
     private route: ActivatedRoute,
@@ -20,10 +34,20 @@ export class AutoComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const id = Number(this.route.snapshot.paramMap.get('id'));
-    this.autoService.getAuto(id).subscribe(
-      auto => this.autoObs = of(auto)
-    );
+    console.log("AutoComponent.ngOnInit()");
+    const routeParams = this.route.snapshot.paramMap;
+    const id = routeParams.get('id');
+    console.log("id: " + id);
+
+    this.autoService.getAuto(Number(id)).subscribe(auto => {
+      console.log("auto: " + JSON.stringify(auto));
+      this.autoObs = of(auto);
+      //this.auto = auto;
+      let dealer = auto?.dealer;
+      if(dealer) {
+        this.center = {lat: dealer.latitude, lng: dealer.longitude};
+      }
+    });
   }
 
   getIcon(description: string) {

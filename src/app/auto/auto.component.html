@@ -118,7 +118,41 @@
               </div>
             </div>
           </mat-tab>
-        </mat-tab-group>
+          <div *ngIf="auto?.dealer === undefined">
+            <mat-tab label="Dealer">
+              <div class="description-container">
+                <div class="description-item">
+                  <p class="description-title">Name</p>
+                  <p class="description-text">{{auto.dealer?.name}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">City</p>
+                  <p class="description-text">{{auto.dealer?.city}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Franchise Dealer</p>
+                  <p class="description-text">{{auto.dealer?.franchiseDealer}}</p>
+                </div>
+                <div [hidden]="!auto.dealer?.franchiseDealer" class="description-item">
+                  <p class="description-title">Franchise Make</p>
+                  <p class="description-text">{{auto.dealer?.franchiseMake}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Rating</p>
+                  <p class="description-text">{{auto.dealer?.rating}}</p>
+                </div>
+              </div>
+              <google-map
+                height="500px"
+                width="100%"
+                [zoom]="zoom"
+                [center]="center"
+                [options]="options"
+              ></google-map>
+            </mat-tab>
+          </div>
+
+          </mat-tab-group>
       </div>
     </div>
 

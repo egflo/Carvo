@@ -12,6 +12,8 @@ import {MatChipsModule} from '@angular/material/chips';
 import {MatIconModule} from "@angular/material/icon";
 import {MatCardModule} from '@angular/material/card';
 import {MatTabsModule} from "@angular/material/tabs";
+import {GoogleMapsModule} from "@angular/google-maps";
+import {StarRatingModule} from "angular-star-rating";
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import {MatTabsModule} from "@angular/material/tabs";
     MatChipsModule,
     MatIconModule,
     MatCardModule,
-    MatTabsModule
+    MatTabsModule,
+    GoogleMapsModule,
+    StarRatingModule.forRoot()
   ],
   providers: [
     HttpErrorHandler,

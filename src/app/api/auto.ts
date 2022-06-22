@@ -20,7 +20,7 @@ export interface Auto {
   exteriorColor: string;
   fleet: boolean;
   report: Report;
-  dealer: Dealer;
+  dealer?: Dealer;
   fuelTankVolume: string;
   fuel: Fuel;
   highwayMpg: number;
