@@ -5,7 +5,7 @@ import {AutoComponent} from "../auto/auto.component";
 
 const routes: Routes = [
   { path: '', redirectTo: '/dashboard', pathMatch: 'full' },
-  { path: 'auto/:id', component: AutoComponent },
+  { path: 'auto/:id', component: AutoComponent, pathMatch: 'full' },
 ];
 
 @NgModule({

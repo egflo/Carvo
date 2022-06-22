@@ -1,5 +1,5 @@
 <div *ngIf="(autoObs | async) as auto; else loading">
-  <div class="container-fluid">
+  <div class="container-auto">
     <div class="header-container">
       <div class="header">
         <div class="image-container">
@@ -52,11 +52,24 @@
       </div>
     </div>
 
+    <mat-chip-list class="mat-chip-list" aria-label="Color selection">
+      <mat-chip *ngFor="let chip of auto.options" selected [color]="">
+        <mat-icon
+          [svgIcon]="getIcon(chip.description)"
+        >
+        </mat-icon>
+
+        {{chip.description}}
+      </mat-chip>
+    </mat-chip-list>
+
     <div class="card">
       <div class="card-body">
         <mat-tab-group>
           <mat-tab label="Description">
-            <p class="card-text">{{auto.description}}</p>
+            <div class="description-container">
+              <p class="description">{{auto.description}}</p>
+            </div>
           </mat-tab>
           <mat-tab label="Mechanical">
             <div class="description-container">
@@ -73,8 +86,8 @@
                 <p class="description-text">{{auto.engine.displacement}}</p>
               </div>
               <div class="description-item">
-                <p class="description-title">Transmission</p>
-                <p class="description-text">{{auto.transmission.description}}</p>
+                <p class="description-title">Torque</p>
+                <p class="description-text">{{auto.torque}}</p>
               </div>
               <div class="description-item">
                 <p class="description-title">Transmission</p>
@@ -91,6 +104,10 @@
               <div class="description-item">
                 <p class="description-title">Body</p>
                 <p class="description-text">{{auto.body.bodyType}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Color</p>
+                <p class="description-text">{{auto.exteriorColor}}</p>
               </div>
               <div class="description-item">
                 <p class="description-title">Length</p>
@@ -118,7 +135,7 @@
               </div>
             </div>
           </mat-tab>
-          <div *ngIf="auto?.dealer === undefined">
+          <div *ngIf="!(auto?.dealer === undefined)">
             <mat-tab label="Dealer">
               <div class="description-container">
                 <div class="description-item">
@@ -155,20 +172,6 @@
           </mat-tab-group>
       </div>
     </div>
-
-    <mat-chip-list class="mat-chip-list" aria-label="Color selection">
-      <mat-chip *ngFor="let chip of auto.options" selected [color]="">
-        <mat-icon
-          [svgIcon]="getIcon(chip.description)"
-        >
-        </mat-icon>
-
-        {{chip.description}}
-      </mat-chip>
-    </mat-chip-list>
-  </div>
-  <div class="row">
-
   </div>
 </div>
 <ng-template #loading>

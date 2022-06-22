@@ -2,8 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import {Auto} from "../api/auto";
 import {AutoService} from "./auto.service";
 import {Observable, of} from "rxjs";
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Location } from '@angular/common';
+import { switchMap } from 'rxjs/operators';
+import { Router, ParamMap } from '@angular/router';
+
 
 @Component({
   selector: 'auto', // Basic CSS selector
@@ -13,7 +16,7 @@ import { Location } from '@angular/common';
 
 export class AutoComponent implements OnInit {
   autoObs!: Observable<Auto>;
-  auto: Auto|undefined;
+  auto: Auto | undefined;
 
   center: google.maps.LatLngLiteral = {lat: 50.06465, lng: 19.94498};
   options: google.maps.MapOptions = {
@@ -26,34 +29,40 @@ export class AutoComponent implements OnInit {
   }
   zoom: number = 12;
 
-
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private location: Location,
     private autoService: AutoService
   ) {}
 
   ngOnInit(): void {
-    console.log("AutoComponent.ngOnInit()");
     const routeParams = this.route.snapshot.paramMap;
-    const id = routeParams.get('id');
+    const id = Number(routeParams.get('id'));
     console.log("id: " + id);
 
     this.autoService.getAuto(Number(id)).subscribe(auto => {
-      console.log("auto: " + JSON.stringify(auto));
       this.autoObs = of(auto);
       //this.auto = auto;
-      let dealer = auto?.dealer;
-      if(dealer) {
+      if(auto?.dealer) {
+        let dealer = auto.dealer;
         this.center = {lat: dealer.latitude, lng: dealer.longitude};
       }
     });
+  }
+
+  canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
+    const id = route.paramMap.get('id');
+    console.log("canActivate: " + id);
+    return true;
   }
 
   getIcon(description: string) {
     const name = description.toLowerCase()
     if (name.includes('cold')) {
       return 'cold';
+    }  else if (name.includes('wheel')) {
+      return 'wheel';
     } else if (name.includes('leather')) {
       return 'interior';
     } else if (name.includes('sport')) {

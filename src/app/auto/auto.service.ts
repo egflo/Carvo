@@ -21,13 +21,14 @@ const httpOptions = {
 })
 export class AutoService {
   private handleError: HandleError;
-  private autosUrl: string = 'http://localhost:8080/auto/';
+  private autosUrl: string = 'http://localhost:8080/auto';
 
   /** Get Auto by id. Will 404 if id not found */
   getAuto(id: number): Observable<Auto> {//const url = `${this.autosUrl}/${id}`;
     const url = `${this.autosUrl}/${id}`;
+    console.log("getAuto: " + url);
 
-    return this.http.get<Auto>(this.autosUrl + id, httpOptions).pipe(
+    return this.http.get<Auto>(url, httpOptions).pipe(
       catchError(this.handleError<Auto>(`getAuto id=${id}`))
     );
   }
