@@ -1,0 +1,142 @@
+<div *ngIf="(autoObs | async) as auto; else loading">
+  <div class="container-fluid">
+    <div class="header-container">
+      <div class="header">
+        <div class="image-container">
+          <img src="https://cars.usnews.com/pics/size/776x517/images/Auto/izmo/i58029937/2018_bmw_x6_angularfront.jpg" class="photo" alt="Photo">
+          <div class="info-bar">
+            <div class="info-bar-item">
+              <h3 class="info-title"> {{auto.year}} {{auto.make.name}} {{auto.modelName}} {{auto.trim.description}}</h3>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <div class="icons-container">
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="mileage"></mat-icon>
+            <p class="icon-text">{{auto.mileage}} miles</p>
+          </div>
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="owner"></mat-icon>
+            <p class="icon-text">{{auto.report.ownerCount}} owner(s)</p>
+          </div>
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="transmission"></mat-icon>
+            <p class="icon-text">{{auto.transmission.description}}</p>
+          </div>
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="drivetrain"></mat-icon>
+            <p class="icon-text">{{auto.drivetrain.description}}</p>
+          </div>
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="fuel"></mat-icon>
+            <p class="icon-text">{{auto.fuel.type}}</p>
+          </div>
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="engine"></mat-icon>
+            <p class="icon-text">{{auto.engine.type}}</p>
+          </div>
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="mpg"></mat-icon>
+            <p class="icon-text">{{auto.cityMpg}} MPG</p>
+          </div>
+          <div class="icon-container">
+            <mat-icon class="icon-display" svgIcon="interior"></mat-icon>
+            <p class="icon-text">{{auto.color.name}}</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body">
+        <mat-tab-group>
+          <mat-tab label="Description">
+            <p class="card-text">{{auto.description}}</p>
+          </mat-tab>
+          <mat-tab label="Mechanical">
+            <div class="description-container">
+              <div class="description-item">
+                <p class="description-title">Engine</p>
+                <p class="description-text">{{auto.engine.type}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Cylinders</p>
+                <p class="description-text">{{auto.engine.cylinders}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Displacement</p>
+                <p class="description-text">{{auto.engine.displacement}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Transmission</p>
+                <p class="description-text">{{auto.transmission.description}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Transmission</p>
+                <p class="description-text">{{auto.transmission.description}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Drivetrain</p>
+                <p class="description-text">{{auto.drivetrain.description}}</p>
+              </div>
+            </div>
+          </mat-tab>
+          <mat-tab label="Exterior">
+            <div class="description-container">
+              <div class="description-item">
+                <p class="description-title">Body</p>
+                <p class="description-text">{{auto.body.bodyType}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Length</p>
+                <p class="description-text">{{auto.body.length}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Width</p>
+                <p class="description-text">{{auto.body.width}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Height</p>
+                <p class="description-text">{{auto.body.height}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Wheelbase</p>
+                <p class="description-text">{{auto.body.wheelbase}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Front Legroom</p>
+                <p class="description-text">{{auto.body.frontLegroom}}</p>
+              </div>
+              <div class="description-item">
+                <p class="description-title">Back Legroom</p>
+                <p class="description-text">{{auto.body.backLegroom}}</p>
+              </div>
+            </div>
+          </mat-tab>
+        </mat-tab-group>
+      </div>
+    </div>
+
+    <mat-chip-list class="mat-chip-list" aria-label="Color selection">
+      <mat-chip *ngFor="let chip of auto.options" selected [color]="">
+        <mat-icon
+          [svgIcon]="getIcon(chip.description)"
+        >
+        </mat-icon>
+
+        {{chip.description}}
+      </mat-chip>
+    </mat-chip-list>
+  </div>
+  <div class="row">
+
+  </div>
+</div>
+<ng-template #loading>
+  <p>Loading...</p>
+</ng-template>

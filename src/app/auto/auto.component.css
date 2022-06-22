@@ -1,0 +1,135 @@
+
+
+.header-container {
+  height: 45vh;
+}
+
+.header {
+  text-align: center;
+  position: relative;
+  width: 75vw;
+  height: 42vh;
+}
+
+.image-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 75vw;
+  height: 40vh;
+  border-radius: 5rem;
+  position: absolute;
+  background-color: white;
+
+}
+
+.photo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 5rem;
+}
+
+.info-bar {
+  width: 65vw;
+  height: 4rem;
+  background-color: #1976d2;
+  border-radius: 5rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+
+  position: absolute;
+  bottom: -2rem;
+}
+
+.info-title {
+  font-size: 2rem;
+  color: white;
+  font-weight: bold;
+  margin: 0;
+}
+
+mat-chip {
+  max-width: max-content;
+  max-width: intrinsic;           /* Safari/WebKit uses a non-standard name */
+  max-width: -moz-max-content;
+  background-color: #1976d2 !important;
+  color: white;
+}
+
+mat-icon {
+  margin-right: 0.5rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.card-text {
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+<!-- /* Stack on top of each other */ -->
+.icons-container {
+  width: 75vw;
+  overflow:hidden;
+  border: 1px solid #1976d2;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  float: left;
+  height: 6rem;
+  width: 7.5rem;
+  max-width: 7.5rem;
+}
+
+.icon-display{
+  transform: scale(2);
+  margin: 0 0 1rem;
+}
+
+.icon-text {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  text-align: center;
+}
+
+.description-container {
+  display: flex;
+  flex-direction: row;
+
+  width: 75vw;
+  overflow: hidden;
+}
+
+.description-item {
+  padding: 0.5rem;
+  width: 10rem;
+  border: 1px solid #1976d2;
+  float: left;
+}
+
+.description-title {
+  font-size: 1rem;
+  font-weight: bold;
+  margin: 0;
+  color: gray;
+}
+
+.description-text {
+  font-size: 1rem;
+  margin: 0;
+  color: black;
+}
