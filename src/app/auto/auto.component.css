@@ -13,6 +13,10 @@
   margin-bottom:  1rem;
 }
 
+.auto-container .tabs {
+  border: 1px solid red;
+}
+
 .header-container {
   height: 45vh;
 }

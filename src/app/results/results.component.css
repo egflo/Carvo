@@ -1,0 +1,31 @@
+
+.result-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 75vw;
+  height: 100%;
+}
+
+.results-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+}
+.pagination {
+  width: 100%;
+}
+
+.result-container {
+
+  margin: 1rem;
+}
+
+.card-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #1976d2;
+}
+

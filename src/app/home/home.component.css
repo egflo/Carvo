@@ -1,5 +1,24 @@
 
 
+.form-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  border: 1px solid #ccc;
+}
+
+.form-container > div {
+  margin-right: 2rem;
+}
+
+.button-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 1rem;
+}
+
 .types-container {
   display: flex;
   flex-wrap: wrap;

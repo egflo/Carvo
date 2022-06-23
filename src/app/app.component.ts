@@ -30,10 +30,12 @@ export class AppComponent {
       ),
       this.matIconRegistry.addSvgIcon(
         "cold",
-        this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/cold_icon.svg")),
+        this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/cold_icon.svg")
+      ),
       this.matIconRegistry.addSvgIcon(
         "drivetrain",
-        this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/drivetrain_icon.svg"))
+        this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/drivetrain_icon.svg")
+      ),
       this.matIconRegistry.addSvgIcon(
         "engine",
         this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/engine_icon.svg")
@@ -86,10 +88,10 @@ export class AppComponent {
         "transmission",
         this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/transmission_icon.svg")
       ),
-      this.matIconRegistry.addSvgIcon(
-        "color",
-        this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/color_icon.svg")
-      );
+    this.matIconRegistry.addSvgIcon(
+      "color",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/color_icon.svg")
+    ),
     this.matIconRegistry.addSvgIcon(
       "crewcab",
       this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/crewcab_icon.svg")

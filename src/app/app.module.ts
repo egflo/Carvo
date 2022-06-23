@@ -15,13 +15,20 @@ import {MatTabsModule} from "@angular/material/tabs";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {StarRatingModule} from "angular-star-rating";
 import { HomeComponent } from './home/home.component';
+import {MatFormFieldModule} from "@angular/material/form-field";
+import {MatSelectModule} from "@angular/material/select";
+import {ReactiveFormsModule} from "@angular/forms";
+import {MatButtonToggleModule} from "@angular/material/button-toggle";
+import { ResultsComponent } from './results/results.component';
+import {MatPaginatorModule} from "@angular/material/paginator";
 
 
 @NgModule({
   declarations: [
     AppComponent,
     AutoComponent,
-    HomeComponent
+    HomeComponent,
+    ResultsComponent
   ],
   imports: [
     BrowserModule,
@@ -33,7 +40,12 @@ import { HomeComponent } from './home/home.component';
     MatCardModule,
     MatTabsModule,
     GoogleMapsModule,
-    StarRatingModule.forRoot()
+    StarRatingModule.forRoot(),
+    MatFormFieldModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatButtonToggleModule,
+    MatPaginatorModule
   ],
   providers: [
     HttpErrorHandler,

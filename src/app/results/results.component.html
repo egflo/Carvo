@@ -1,0 +1,27 @@
+<p>results works!</p>
+
+<div class="result-body">
+  <div class="results-container">
+    <div *ngFor="let auto of results" class="result-container">
+      <div class="card" style="width: 18rem;">
+        <img class="card-img-top" src="/assets/images/fallback.png" alt="Auto">
+        <div class="card-body">
+          <h5 class="card-title">{{auto.year}} {{auto.make.name}} {{auto.modelName}}</h5>
+          <p class="card-text">{{auto.price}}</p>
+          <a href="#" class="btn btn-primary">Go somewhere</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="pagination">
+    <mat-paginator [length]="numberOfElements"
+                   [pageSize]="limit"
+                   [pageSizeOptions]="pageSizeOptions"
+                   (page)="onPageChange($event)"
+                   aria-label="Select page">
+    </mat-paginator>
+  </div>
+</div>
+
+
