@@ -14,12 +14,14 @@ import {MatCardModule} from '@angular/material/card';
 import {MatTabsModule} from "@angular/material/tabs";
 import {GoogleMapsModule} from "@angular/google-maps";
 import {StarRatingModule} from "angular-star-rating";
+import { HomeComponent } from './home/home.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
-    AutoComponent
+    AutoComponent,
+    HomeComponent
   ],
   imports: [
     BrowserModule,

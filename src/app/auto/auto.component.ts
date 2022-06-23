@@ -88,4 +88,9 @@ export class AutoComponent implements OnInit {
 
     return 'car';
   }
+
+  isCrewCab(auto: Auto) {
+    const name = auto.body.cabin.toLowerCase()
+    return !name.includes('crew cab')
+  }
 }

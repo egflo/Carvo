@@ -1,0 +1,39 @@
+
+
+.types-container {
+  display: flex;
+  flex-wrap: wrap;
+  width: 75vw;
+}
+
+.type-container {
+  box-shadow:  0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  border-radius:  2rem;
+  width: 11rem;
+  height: 10rem;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  background-color: white;
+  margin: 1rem;
+
+}
+
+<!--Hover effect-->
+.type-container:hover {
+  background-color: #bbbcbe;
+}
+
+.type-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 2.4rem 0 0;
+  color: #1976d2;
+
+}
+.mat-icon {
+  transform: scale(7);
+}

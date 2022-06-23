@@ -1,175 +1,250 @@
 <div *ngIf="(autoObs | async) as auto; else loading">
   <div class="container-auto">
-    <div class="header-container">
-      <div class="header">
-        <div class="image-container">
-          <img src="https://cars.usnews.com/pics/size/776x517/images/Auto/izmo/i58029937/2018_bmw_x6_angularfront.jpg" class="photo" alt="Photo">
-          <div class="info-bar">
-            <div class="info-bar-item">
-              <h3 class="info-title"> {{auto.year}} {{auto.make.name}} {{auto.modelName}} {{auto.trim.description}}</h3>
+    <div class="auto-container">
+      <div class="header-container">
+        <div class="header">
+          <div class="image-container">
+            <img src="https://cars.usnews.com/pics/size/776x517/images/Auto/izmo/i5006/2015_bmw_7_series_angularfront.jpg" class="photo" alt="Photo">
+            <div class="info-bar">
+              <div class="info-bar-item">
+                <h3 class="info-title"> {{auto.year}} {{auto.make.name}} {{auto.modelName}} {{auto.trim.description}}</h3>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-body">
-        <div class="icons-container">
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="mileage"></mat-icon>
-            <p class="icon-text">{{auto.mileage}} miles</p>
-          </div>
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="owner"></mat-icon>
-            <p class="icon-text">{{auto.report.ownerCount}} owner(s)</p>
-          </div>
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="transmission"></mat-icon>
-            <p class="icon-text">{{auto.transmission.description}}</p>
-          </div>
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="drivetrain"></mat-icon>
-            <p class="icon-text">{{auto.drivetrain.description}}</p>
-          </div>
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="fuel"></mat-icon>
-            <p class="icon-text">{{auto.fuel.type}}</p>
-          </div>
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="engine"></mat-icon>
-            <p class="icon-text">{{auto.engine.type}}</p>
-          </div>
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="mpg"></mat-icon>
-            <p class="icon-text">{{auto.cityMpg}} MPG</p>
-          </div>
-          <div class="icon-container">
-            <mat-icon class="icon-display" svgIcon="interior"></mat-icon>
-            <p class="icon-text">{{auto.color.name}}</p>
+    <div class="auto-container">
+      <div class="card">
+        <div class="card-body">
+          <div class="icons-container">
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="mileage"></mat-icon>
+              <p class="icon-text">{{auto.mileage}} miles</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="owner"></mat-icon>
+              <p class="icon-text">{{auto.report.ownerCount}} owner(s)</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="transmission"></mat-icon>
+              <p class="icon-text">{{auto.transmission.description}}</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="drivetrain"></mat-icon>
+              <p class="icon-text">{{auto.drivetrain.description}}</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="fuel"></mat-icon>
+              <p class="icon-text">{{auto.fuel.type}}</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="engine"></mat-icon>
+              <p class="icon-text">{{auto.engine.type}}</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="mpg"></mat-icon>
+              <p class="icon-text">{{auto.cityMpg}} MPG</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="interior"></mat-icon>
+              <p class="icon-text">{{auto.seating}} seats</p>
+            </div>
+            <div class="icon-container">
+              <mat-icon class="icon-display" svgIcon="color"></mat-icon>
+              <p class="icon-text">{{auto.color.name}}</p>
+            </div>
+            <div [hidden]="isCrewCab(auto)" class="icon-container">
+              <mat-icon class="icon-display" svgIcon="crewcab"></mat-icon>
+              <p class="icon-text">Crew Cab</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <mat-chip-list class="mat-chip-list" aria-label="Color selection">
-      <mat-chip *ngFor="let chip of auto.options" selected [color]="">
-        <mat-icon
-          [svgIcon]="getIcon(chip.description)"
-        >
-        </mat-icon>
+    <div class="auto-container">
+      <mat-chip-list class="mat-chip-list" aria-label="Color selection">
+        <mat-chip *ngFor="let chip of auto.options" selected [color]="">
+          <mat-icon
+            [svgIcon]="getIcon(chip.description)"
+          >
+          </mat-icon>
 
-        {{chip.description}}
-      </mat-chip>
-    </mat-chip-list>
+          {{chip.description}}
+        </mat-chip>
+      </mat-chip-list>
+    </div>
 
-    <div class="card">
-      <div class="card-body">
-        <mat-tab-group>
-          <mat-tab label="Description">
-            <div class="description-container">
-              <p class="description">{{auto.description}}</p>
-            </div>
-          </mat-tab>
-          <mat-tab label="Mechanical">
-            <div class="description-container">
-              <div class="description-item">
-                <p class="description-title">Engine</p>
-                <p class="description-text">{{auto.engine.type}}</p>
+    <div class="auto-container">
+      <div class="card">
+        <div class="card-body">
+          <mat-tab-group>
+            <mat-tab label="Description">
+              <div class="description-container">
+                <p class="description">{{auto.description}}</p>
               </div>
-              <div class="description-item">
-                <p class="description-title">Cylinders</p>
-                <p class="description-text">{{auto.engine.cylinders}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Displacement</p>
-                <p class="description-text">{{auto.engine.displacement}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Torque</p>
-                <p class="description-text">{{auto.torque}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Transmission</p>
-                <p class="description-text">{{auto.transmission.description}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Drivetrain</p>
-                <p class="description-text">{{auto.drivetrain.description}}</p>
-              </div>
-            </div>
-          </mat-tab>
-          <mat-tab label="Exterior">
-            <div class="description-container">
-              <div class="description-item">
-                <p class="description-title">Body</p>
-                <p class="description-text">{{auto.body.bodyType}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Color</p>
-                <p class="description-text">{{auto.exteriorColor}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Length</p>
-                <p class="description-text">{{auto.body.length}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Width</p>
-                <p class="description-text">{{auto.body.width}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Height</p>
-                <p class="description-text">{{auto.body.height}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Wheelbase</p>
-                <p class="description-text">{{auto.body.wheelbase}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Front Legroom</p>
-                <p class="description-text">{{auto.body.frontLegroom}}</p>
-              </div>
-              <div class="description-item">
-                <p class="description-title">Back Legroom</p>
-                <p class="description-text">{{auto.body.backLegroom}}</p>
-              </div>
-            </div>
-          </mat-tab>
-          <div *ngIf="!(auto?.dealer === undefined)">
-            <mat-tab label="Dealer">
+            </mat-tab>
+            <mat-tab label="Mechanical">
               <div class="description-container">
                 <div class="description-item">
-                  <p class="description-title">Name</p>
-                  <p class="description-text">{{auto.dealer?.name}}</p>
+                  <p class="description-title">Engine</p>
+                  <p class="description-text">{{auto.engine.type}}</p>
                 </div>
                 <div class="description-item">
-                  <p class="description-title">City</p>
-                  <p class="description-text">{{auto.dealer?.city}}</p>
+                  <p class="description-title">Cylinders</p>
+                  <p class="description-text">{{auto.engine.cylinders}}</p>
                 </div>
                 <div class="description-item">
-                  <p class="description-title">Franchise Dealer</p>
-                  <p class="description-text">{{auto.dealer?.franchiseDealer}}</p>
-                </div>
-                <div [hidden]="!auto.dealer?.franchiseDealer" class="description-item">
-                  <p class="description-title">Franchise Make</p>
-                  <p class="description-text">{{auto.dealer?.franchiseMake}}</p>
+                  <p class="description-title">Displacement</p>
+                  <p class="description-text">{{auto.engine.displacement}}</p>
                 </div>
                 <div class="description-item">
-                  <p class="description-title">Rating</p>
-                  <p class="description-text">{{auto.dealer?.rating}}</p>
+                  <p class="description-title">Torque</p>
+                  <p class="description-text">{{auto.torque}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Transmission</p>
+                  <p class="description-text">{{auto.transmission.description}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Drivetrain</p>
+                  <p class="description-text">{{auto.drivetrain.description}}</p>
                 </div>
               </div>
-              <google-map
-                height="500px"
-                width="100%"
-                [zoom]="zoom"
-                [center]="center"
-                [options]="options"
-              ></google-map>
             </mat-tab>
-          </div>
-
+            <mat-tab label="Exterior">
+              <div class="description-container">
+                <div class="description-item">
+                  <p class="description-title">Body</p>
+                  <p class="description-text">{{auto.body.bodyType}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Color</p>
+                  <p class="description-text">{{auto.exteriorColor}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Length</p>
+                  <p class="description-text">{{auto.body.length}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Width</p>
+                  <p class="description-text">{{auto.body.width}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Height</p>
+                  <p class="description-text">{{auto.body.height}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Wheelbase</p>
+                  <p class="description-text">{{auto.body.wheelbase}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Front Legroom</p>
+                  <p class="description-text">{{auto.body.frontLegroom}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Back Legroom</p>
+                  <p class="description-text">{{auto.body.backLegroom}}</p>
+                </div>
+              </div>
+            </mat-tab>
+            <div *ngIf="!(auto?.dealer === undefined)">
+              <mat-tab label="Dealer">
+                <div class="description-container">
+                  <div class="description-item">
+                    <p class="description-title">Name</p>
+                    <p class="description-text">{{auto.dealer?.name}}</p>
+                  </div>
+                  <div class="description-item">
+                    <p class="description-title">City</p>
+                    <p class="description-text">{{auto.dealer?.city}}</p>
+                  </div>
+                  <div class="description-item">
+                    <p class="description-title">Franchise Dealer</p>
+                    <p class="description-text">{{auto.dealer?.franchiseDealer}}</p>
+                  </div>
+                  <div [hidden]="!auto.dealer?.franchiseDealer" class="description-item">
+                    <p class="description-title">Franchise Make</p>
+                    <p class="description-text">{{auto.dealer?.franchiseMake}}</p>
+                  </div>
+                  <div class="description-item">
+                    <p class="description-title">Rating</p>
+                    <p class="description-text">{{auto.dealer?.rating}}</p>
+                  </div>
+                </div>
+                <google-map
+                  height="500px"
+                  width="100%"
+                  [zoom]="zoom"
+                  [center]="center"
+                  [options]="options"
+                ></google-map>
+              </mat-tab>
+            </div>
+            <mat-tab label="Report">
+              <div class="description-container">
+                <div class="description-item">
+                  <p class="description-title">VIN</p>
+                  <p class="description-text">{{auto.report.vin}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Frame Damage</p>
+                  <p class="description-text">{{auto.report.frameDamage}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Accident(s)</p>
+                  <p class="description-text">{{auto.report.hasAccidents}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Theft Title</p>
+                  <p class="description-text">{{auto.report.theftTitle}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Salvage</p>
+                  <p class="description-text">{{auto.report.salvage}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Owner(s)</p>
+                  <p class="description-text">{{auto.report.ownerCount}}</p>
+                </div>
+              </div>
+            </mat-tab>
+            <mat-tab label="Miscellaneous">
+              <div class="description-container">
+                <div class="description-item">
+                  <p class="description-title">Was Fleet</p>
+                  <p class="description-text">{{auto.fleet}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Was Cab</p>
+                  <p class="description-text">{{auto.isCab}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Is New</p>
+                  <p class="description-text">{{auto.isNew}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Is Certified Pre-Owned (CPO)</p>
+                  <p class="description-text">{{auto.isCpo}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Is OEM CPO</p>
+                  <p class="description-text">{{auto.isOemcpo}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Listing ID</p>
+                  <p class="description-text">{{auto.listingId}}</p>
+                </div>
+                <div class="description-item">
+                  <p class="description-title">Fuel Tank Volume</p>
+                  <p class="description-text">{{auto.fuelTankVolume}}</p>
+                </div>
+              </div>
+            </mat-tab>
           </mat-tab-group>
+        </div>
       </div>
     </div>
   </div>
