@@ -21,6 +21,7 @@
     "@angular/platform-browser": "^14.0.0",
     "@angular/platform-browser-dynamic": "^14.0.0",
     "@angular/router": "^14.0.0",
+    "@formatjs/intl-numberformat": "^8.0.2",
     "angular-star-rating": "^5.1.0",
     "angular-ui-bootstrap": "^2.5.6",
     "bootstrap": "^5.2.0-beta1",

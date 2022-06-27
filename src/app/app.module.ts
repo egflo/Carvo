@@ -21,6 +21,10 @@ import {ReactiveFormsModule} from "@angular/forms";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import { ResultsComponent } from './results/results.component';
 import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatSidenavModule} from "@angular/material/sidenav";
+import {MatToolbarModule} from "@angular/material/toolbar";
+import {MatListModule} from "@angular/material/list";
+import {CdkAccordionModule} from "@angular/cdk/accordion";
 
 
 @NgModule({
@@ -45,7 +49,11 @@ import {MatPaginatorModule} from "@angular/material/paginator";
     MatSelectModule,
     ReactiveFormsModule,
     MatButtonToggleModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    CdkAccordionModule
   ],
   providers: [
     HttpErrorHandler,

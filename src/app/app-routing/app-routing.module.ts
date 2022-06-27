@@ -8,7 +8,7 @@ import {ResultsComponent} from "../results/results.component";
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'auto/:id', component: AutoComponent, pathMatch: 'full' },
-  { path: 'results', component: ResultsComponent },
+  { path: 'results/:id', component: ResultsComponent },
 ];
 
 @NgModule({
