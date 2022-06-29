@@ -25,6 +25,8 @@ import {MatSidenavModule} from "@angular/material/sidenav";
 import {MatToolbarModule} from "@angular/material/toolbar";
 import {MatListModule} from "@angular/material/list";
 import {CdkAccordionModule} from "@angular/cdk/accordion";
+import {GalleryModule} from "ng-gallery";
+import { AutoCardComponent } from './auto-card/auto-card.component';
 
 
 @NgModule({
@@ -32,7 +34,8 @@ import {CdkAccordionModule} from "@angular/cdk/accordion";
     AppComponent,
     AutoComponent,
     HomeComponent,
-    ResultsComponent
+    ResultsComponent,
+    AutoCardComponent
   ],
   imports: [
     BrowserModule,
@@ -53,7 +56,8 @@ import {CdkAccordionModule} from "@angular/cdk/accordion";
     MatSidenavModule,
     MatToolbarModule,
     MatListModule,
-    CdkAccordionModule
+    CdkAccordionModule,
+    GalleryModule
   ],
   providers: [
     HttpErrorHandler,

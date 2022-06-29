@@ -1,0 +1,32 @@
+<div class="card" (click)="onClick(auto.id)">
+  <div class="image-container">
+    <gallery id="gallery-{{auto.id}}" class="test" [thumb]="false" [counter]="false" [dots]="true"></gallery>
+    <mat-icon class="favorite-icon">favorite</mat-icon>
+  </div>
+  <div class="card-body">
+    <h5 class="card-title">{{auto.year}} {{auto.make.name}} {{auto.model}}</h5>
+    <p class="card-text">{{formatCurrency(auto.price)}}</p>
+
+    <div class = "icons">
+      <div class="icon-container">
+        <mat-icon class="icon-display" svgIcon="mileage"></mat-icon>
+        <p class="icon-text">{{formatMiles(auto.mileage)}}</p>
+      </div>
+      <div class="icon-container">
+        <mat-icon class="icon-display" svgIcon="drivetrain"></mat-icon>
+        <p class="icon-text">{{auto.drivetrain.name}}</p>
+      </div>
+      <div class="icon-container">
+        <mat-icon class="icon-display" svgIcon="mpg"></mat-icon>
+        <p class="icon-text">{{auto.cityMpg}} MPG</p>
+      </div>
+      <div class="icon-container">
+        <mat-icon class="icon-display" svgIcon="fuel"></mat-icon>
+        <p class="icon-text">{{auto.fuel.type}}</p>
+      </div>
+    </div>
+  </div>
+</div>
+<ng-template #loading>
+  <p>Loading...</p>
+</ng-template>

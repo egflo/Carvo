@@ -1,0 +1,73 @@
+.image-container {
+  position: relative;
+  width: 100%;
+  height: 13.375rem;
+}
+
+
+.test {
+  width: 100%;
+  height: 13.375rem;
+  background-color: white;
+  border-top-left-radius: 1rem;
+  border-top-right-radius: 1rem;
+}
+
+.image-container img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.image-container mat-icon {
+  position: absolute;
+  top: 5%;
+  left: 5%;
+  color: lightgrey;
+}
+
+.card {
+  height: 23.5rem;
+  width: 18rem;
+  margin-right: 1rem;
+  margin-bottom: 1rem;
+}
+
+.card-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  color: #1976d2;
+}
+
+.card-text {
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+}
+
+.icon-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 0.5rem;
+
+  width: 5rem;
+  height: 4rem;
+}
+
+.icons {
+  display: flex;
+  flex-direction: row;
+}
+
+.icon-display {
+  transform: scale(2);
+  margin-bottom: 0.5rem;
+}
+
+.icon-text {
+  font-weight: bold;
+  margin: 0;
+}

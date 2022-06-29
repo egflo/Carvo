@@ -21,6 +21,7 @@ import {DrivetrainModel} from "../model/drivetrain-model";
 import {TransmissionModel} from "../model/transmission-model";
 import {switchMap} from "rxjs/operators";
 import {Page} from "../api/page";
+import {query} from "@angular/animations";
 
 @Component({
   selector: 'app-results',
@@ -40,10 +41,12 @@ export class ResultsComponent implements OnInit {
   numberOfElements: number = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
 
-
   //Filters
   startYears: number[] = [];
   endYears: number[] = [];
+
+  startYear: number = 1950;
+  endYear: number = new Date().getFullYear();
   makes: MakeModel[] = [];
   types: BodyModel[] = [];
   fuels: FuelModel[] = [];
@@ -89,7 +92,7 @@ export class ResultsComponent implements OnInit {
     });
 
     this.startYears = this.generateArrayYears(1950, new Date().getFullYear());
-    this.endYears = this.generateArrayYears(1950, new Date().getFullYear());
+    this.endYears = this.generateArrayYears(1950, new Date().getFullYear()).reverse();
 
     this.buildMakes();
 
@@ -179,57 +182,54 @@ export class ResultsComponent implements OnInit {
     return years;
   }
 
-  formatMiles(value: number) {
-    let formatter = Intl.NumberFormat('en', { notation: 'compact' });
-    return formatter.format(value);
-  }
-
-  formatCurrency(value: number) {
-    // Create our number formatter.
-    const formatter = new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      // These options are needed to round to whole numbers if that's what you want.
-      //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-      maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
-    });
-
-    return formatter.format(value);
-  }
-
   onPageChange($event: PageEvent) {
     console.log("ResultsComponent.onPageChange");
     console.log($event);
+
+    let page = $event.pageIndex + 1;
+    let limit = $event.pageSize;
+
+    const query = this.buildURL()
+    const params = this.buildParams(page, limit);
+
+    this.search(`${query}?${params.toString()}`);
     //this.router.navigate(['/results'], {queryParams: {page: $event.pageIndex + 1, limit: $event.pageSize}});
-  }
-
-  onClick(id: number) {
-    this.router.navigate(['/auto', id]).then(r =>  {}).catch(e => console.log(e));
-
-  }
-
-  getImage(auto: Auto) {
-    let image = auto.images[0];
-    if (image) {
-      return 'https://cars.usnews.com/pics/size/776x517/images/Auto/izmo/i5006/2015_bmw_7_series_angularfront.jpg';
-      //return image.url.trim();
-    }
-    return '/assets/images/fallback.png'
   }
 
   onChangeSelect($event: Event) {
     const selectElement = $event.target as HTMLSelectElement;
     const value = selectElement.value;
 
-    //change end year to not show years before start year
-    this.endYears = this.generateArrayYears(Number(value), new Date().getFullYear());
+    //if id is start year
+    if(selectElement.id.includes("start-year")) {
+
+      this.startYear = Number(value);
+
+      //this.startYears = this.generateArrayYears(Number(value), new Date().getFullYear());
+      //let start = this.startYears[0];
+      //this.endYears = this.generateArrayYears(start, new Date().getFullYear()).reverse();
+    }
+    //if id is end year
+    if(selectElement.id.includes("end-year")) {
+
+      this.endYear = Number(value);
+
+      let start = this.startYears[0];
+      let end = Number(value);
+      this.endYears = this.generateArrayYears(start, end).reverse();
+    }
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
+
   }
 
   onChangeMileage($event: Event) {
     const selectElement = $event.target as HTMLInputElement;
     this.mileage = Number(selectElement.value);
   }
-
 
   updateCheckList(array: any[], value: any) {
     let object = array.find(m => m.id === Number(value));
@@ -240,47 +240,18 @@ export class ResultsComponent implements OnInit {
     return selected;
   }
 
-
-
   onChangeCheck($event: Event) {
     const selectElement = $event.target as HTMLInputElement;
     const value = selectElement.value;
     const name  = selectElement.name;
-    console.log(value, name);
-
-
-    let query: String = "";
-    let params: URLSearchParams = new URLSearchParams();
 
     if(name === 'make') {
       let object = this.makes.find(m => m.id === Number(value));
       object!.selected = !object!.selected;
-
-      //Find selected makes
-      let selectedMakes = this.makes.filter(m => m.selected);
-
-      for (let make of selectedMakes) {
-        //if last make, don't add comma
-        if(make.id === selectedMakes[selectedMakes.length - 1].id) {
-          query += make.name;
-        }
-        else {
-          query += make.name + "/";
-        }
-      }
     }
     if(name === 'body') {
       let object = this.types.find(t => t.id === Number(value));
       object!.selected = !object!.selected;
-      let selectedTypes = this.types.filter(t => t.selected);
-
-      let codes = '';
-      for(let type of selectedTypes) {
-        codes += type.id + "_";
-      }
-
-      codes = codes.substring(0, codes.length - 1);
-      params.append('body_code', codes);
     }
 
     if(name === 'fuel') {
@@ -298,14 +269,89 @@ export class ResultsComponent implements OnInit {
     if(name === 'transmission') {
       let object = this.transmissions.find(t => t.type === value);
       object!.selected = !object!.selected;
-
     }
 
-    this.page = 1;
-    params.set('page', this.page.toString());
-    params.set('limit', this.limit.toString());
+    const url = this.buildURL();
+    const params = this.buildParams();
 
-    this.search(`${query}?${params.toString()}`);
+    this.search(`${url}?${params.toString()}`);
 
+  }
+
+  buildURL() {
+    //Find selected makes
+    let query = this.makes.filter(m => m.selected).map(m => m.name).join('/');
+    return query;
+  }
+
+  buildParams(page: number = 1, limit: number = 10) {
+    let params: URLSearchParams = new URLSearchParams();
+
+    let selectedTypes = this.types.filter(t => t.selected);
+    let codes = '';
+    for(let type of selectedTypes) {
+      codes += type.id + "_";
+    }
+
+    if(selectedTypes.length > 0) {
+      codes = codes.substring(0, codes.length - 1);
+      params.append('body_code', codes);
+    }
+
+
+    let selectedFuels = this.fuels.filter(f => f.selected);
+    codes = '';
+    for(let fuel of selectedFuels) {
+      codes += fuel.id + "_";
+    }
+
+    if(selectedFuels.length > 0) {
+      codes = codes.substring(0, codes.length - 1);
+      params.append('fuel_code', codes);
+    }
+
+
+    let selectedColors = this.colors.filter(c => c.selected);
+    codes = '';
+    for(let color of selectedColors) {
+      codes += color.id + "_";
+    }
+
+    if(selectedColors.length > 0) {
+      codes = codes.substring(0, codes.length - 1);
+      params.append('color_code', codes);
+    }
+
+    let selectedDrivetrains = this.drivetrains.filter(d => d.selected);
+    codes = '';
+    for(let drivetrain of selectedDrivetrains) {
+      codes += drivetrain.id + "_";
+    }
+
+    if(selectedDrivetrains.length > 0) {
+      codes = codes.substring(0, codes.length - 1);
+      params.append('drivetrain_code', codes);
+    }
+
+    let selectedTransmissions = this.transmissions.filter(t => t.selected);
+    codes = '';
+    for(let transmission of selectedTransmissions) {
+      codes += transmission.type + "_";
+    }
+
+    if(selectedTransmissions.length > 0) {
+      codes = codes.substring(0, codes.length - 1);
+      params.append('transmission_code', codes);
+    };
+
+    this.page = page;
+    this.limit = limit;
+
+    params.append('start_year', this.startYear.toString());
+    params.append('end_year',  this.endYear.toString());
+    params.append('page', this.page.toString());
+    params.append('limit', this.limit.toString());
+
+    return params;
   }
 }

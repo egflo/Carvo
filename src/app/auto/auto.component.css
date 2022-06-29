@@ -8,23 +8,26 @@
   width: 100%;
 }
 
-.auto-container {
+
+.container-auto {
   width: 75vw;
-  margin-bottom:  1rem;
 }
 
-.auto-container .tabs {
-  border: 1px solid red;
+.mat-chip-list-wrapper {
+  margin: 0 auto  ;
+}
+
+.container-auto > div {
+  margin-bottom: 1rem;
 }
 
 .header-container {
-  height: 45vh;
+  height: 40vh;
 }
 
 .header {
   text-align: center;
   position: relative;
-  height: 42vh;
 }
 
 .image-container {
@@ -33,12 +36,15 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  height: 40vh;
-  width: 100%;
   border-radius: 5rem;
-  position: absolute;
   background-color: white;
+}
 
+.test {
+  width: 75vw;
+  height: 40vh;
+  border-radius: 5rem;
+  background-color: white;
 }
 
 .photo {
@@ -58,16 +64,19 @@
   flex-direction: column;
   justify-content: center;
 
+}
 
-  position: absolute;
-  bottom: -2rem;
+.info-bar-item {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .info-title {
   font-size: 2rem;
   color: white;
   font-weight: bold;
-  margin: 0;
+  margin: 0 auto;
 }
 
 mat-chip {
@@ -124,7 +133,6 @@ mat-icon {
 .description-container {
   display: flex;
   flex-wrap: wrap;
-  width: 100%;
 }
 
 .description-item {
@@ -149,4 +157,9 @@ mat-icon {
 .mat-tab-group {
   width: 100%;
   height: 31.25rem;
+}
+
+
+.card {
+  width: 75vw;
 }

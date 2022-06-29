@@ -25,11 +25,11 @@
           <div class = "year-container">
             <select  id="start-year" class="form-select" aria-label="start-year" (change)="onChangeSelect($event)">
               <option selected>Select Start Year</option>
-              <option *ngFor="let year of startYears" [value]="year">{{ year }}</option>
+              <option *ngFor="let year of startYears" [value]="year" [selected]="year == startYear">{{ year }}</option>
             </select>
-            <select id="end-year" class="form-select" aria-label="end-year">
+            <select id="end-year" class="form-select" aria-label="end-year" (change)="onChangeSelect($event)">
               <option selected>Select End Year</option>
-              <option *ngFor="let year of endYears" [value]="year">{{ year }}</option>
+              <option *ngFor="let year of endYears" [value]="year" [selected]="year == endYear">{{ year }}</option>
             </select>
           </div>
         </div>
@@ -262,36 +262,8 @@
   <div class="results-container">
     <div class="data-container">
       <div *ngIf="(results$ | async) as results; else loading">
-        <div *ngFor="let auto of results.content" class="result-container">
-          <div class="card" style="width: 18rem;" (click)="onClick(auto.id)">
-            <div class="image-container">
-              <img class="card-img-top" src="{{getImage(auto)}}" alt="Auto">
-              <mat-icon class="favorite-icon">favorite</mat-icon>
-            </div>
-            <div class="card-body">
-              <h5 class="card-title">{{auto.year}} {{auto.make.name}} {{auto.modelName}}</h5>
-              <p class="card-text">{{formatCurrency(auto.price)}}</p>
-
-              <div class = "icons">
-                <div class="icon-container">
-                  <mat-icon class="icon-display" svgIcon="mileage"></mat-icon>
-                  <p class="icon-text">{{formatMiles(auto.mileage)}}</p>
-                </div>
-                <div class="icon-container">
-                  <mat-icon class="icon-display" svgIcon="drivetrain"></mat-icon>
-                  <p class="icon-text">{{auto.drivetrain.name}}</p>
-                </div>
-                <div class="icon-container">
-                  <mat-icon class="icon-display" svgIcon="mpg"></mat-icon>
-                  <p class="icon-text">{{auto.cityMpg}} MPG</p>
-                </div>
-                <div class="icon-container">
-                  <mat-icon class="icon-display" svgIcon="fuel"></mat-icon>
-                  <p class="icon-text">{{auto.fuel.type}}</p>
-                </div>
-              </div>
-            </div>
-          </div>
+        <div *ngFor="let auto of results.content">
+          <app-auto-card [auto]="auto"></app-auto-card>
         </div>
         <div class="pagination">
           <mat-paginator [length]="results.numberOfElements"

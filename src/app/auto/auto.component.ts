@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild, ViewChildren} from '@angular/core';
 import {Auto} from "../api/auto";
 import {AutoService} from "./auto.service";
-import {Observable, of} from "rxjs";
+import {map, Observable, of} from "rxjs";
 import { ActivatedRoute, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
 import { Router, ParamMap } from '@angular/router';
+import {GalleryComponent, GalleryItem, ImageItem} from "ng-gallery";
 
 
 @Component({
@@ -16,7 +17,7 @@ import { Router, ParamMap } from '@angular/router';
 
 export class AutoComponent implements OnInit {
   autoObs!: Observable<Auto>;
-  auto: Auto | undefined;
+  images$!: Observable<GalleryItem[]>;
 
   center: google.maps.LatLngLiteral = {lat: 50.06465, lng: 19.94498};
   options: google.maps.MapOptions = {
@@ -39,16 +40,74 @@ export class AutoComponent implements OnInit {
   ngOnInit(): void {
     const routeParams = this.route.snapshot.paramMap;
     const id = Number(routeParams.get('id'));
-    console.log("id: " + id);
 
     this.autoService.getAuto(Number(id)).subscribe(auto => {
       this.autoObs = of(auto);
-      //this.auto = auto;
       if(auto?.dealer) {
         let dealer = auto.dealer;
         this.center = {lat: dealer.latitude, lng: dealer.longitude};
       }
+
+      this.images$ = this.autoObs.pipe(
+        switchMap(auto => {
+          return of(this.buildImageItems(auto));
+        }));
     });
+
+
+
+  }
+
+
+
+  ngAfterViewInit() {
+    console.log("ngAfterViewInit");
+  }
+
+  buildImageItems(auto: Auto): GalleryItem[] {
+    let items = []
+
+    let angularFront = new ImageItem({
+      thumb: auto.stockImage!.imageAngularFront,
+      src: auto.stockImage!.imageAngularFront,
+    });
+
+    let frontView = new ImageItem({
+      thumb: auto.stockImage!.imageFront,
+      src: auto.stockImage!.imageFront,
+    });
+
+    let sideView = new ImageItem({
+      thumb: auto.stockImage!.imageSide,
+      src: auto.stockImage!.imageSide,
+    });
+
+    let backView = new ImageItem({
+      thumb: auto.stockImage!.imageRear,
+      src: auto.stockImage!.imageRear,
+    });
+
+    let angularBack = new ImageItem({
+      thumb: auto.stockImage!.imageAngularRear,
+      src: auto.stockImage!.imageAngularRear,
+    });
+
+    items.push(angularFront);
+    items.push(frontView);
+    items.push(sideView);
+    items.push(backView);
+    items.push(angularBack);
+
+    for(let i = 0; i < auto.images.length; i++) {
+      let image = auto.images[i];
+      items.push(new ImageItem({
+        thumb: image.url,
+        src: image.url,
+      }))
+    }
+
+    console.log(items);
+    return items;
   }
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
@@ -57,7 +116,7 @@ export class AutoComponent implements OnInit {
     return true;
   }
 
-  getIcon(description: string) {
+  getIcon(description: string): string {
     const name = description.toLowerCase()
     if (name.includes('cold')) {
       return 'cold';
@@ -92,5 +151,17 @@ export class AutoComponent implements OnInit {
   isCrewCab(auto: Auto) {
     const name = auto.body.cabin.toLowerCase()
     return !name.includes('crew cab')
+  }
+
+  getImage(auto: Auto): string {
+
+    if (auto.stockImage != null) {
+      return auto.stockImage.imageAngularFront;
+    }
+
+    else {
+      return auto.mainPictureUrl;
+    }
+
   }
 }

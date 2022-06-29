@@ -1,17 +1,18 @@
 <div *ngIf="(autoObs | async) as auto; else loading">
   <div class="container-auto">
-    <div class="auto-container">
       <div class="header-container">
         <div class="header">
           <div class="image-container">
-            <img src="https://cars.usnews.com/pics/size/776x517/images/Auto/izmo/i5006/2015_bmw_7_series_angularfront.jpg" class="photo" alt="Photo">
-            <div class="info-bar">
-              <div class="info-bar-item">
-                <h3 class="info-title"> {{auto.year}} {{auto.make.name}} {{auto.modelName}} {{auto.trim.description}}</h3>
-              </div>
+            <div *ngIf="(images$ | async) as items; else loading">
+              <gallery class="test" [items]="items" thumbPosition="left" [thumb]="false"></gallery>
             </div>
           </div>
         </div>
+      </div>
+
+    <div class="info-bar">
+      <div class="info-bar-item">
+        <h3 class="info-title"> {{auto.year}} {{auto.make.name}} {{auto.model}} {{auto.trim.description}}</h3>
       </div>
     </div>
 
@@ -77,7 +78,7 @@
       </mat-chip-list>
     </div>
 
-    <div class="auto-container tabs">
+    <div class="auto-container">
       <div class="card">
         <div class="card-body">
           <mat-tab-group>
@@ -175,7 +176,7 @@
                   </div>
                 </div>
                 <google-map
-                  height="500px"
+                  height="40vh"
                   width="100%"
                   [zoom]="zoom"
                   [center]="center"
