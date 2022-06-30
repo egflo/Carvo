@@ -54,4 +54,21 @@ export class HomeComponent implements OnInit {
   submit() {
     console.log("submit");
   }
+
+  onBrandClick(event: string) {
+    console.log("onBrandClick: " + event);
+    //Get id of clicked brand
+    //router
+    this.router.navigate(['/results', event]).then(r => {
+      console.log("navigation success");
+    });
+
+  }
+
+  onTypeClick(type: string) {
+    console.log("onTypeClick: " + type);
+    this.router.navigate(['/results', type]).then(r => {
+      console.log("navigation success");
+    });
+  }
 }

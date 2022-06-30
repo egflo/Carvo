@@ -40,45 +40,45 @@
 
 
 <div class = "types-container">
-  <div class ="type-container">
+  <div class ="type-container" (click)="onTypeClick('suv')">
      <mat-icon svgIcon="suv"></mat-icon>
      <p class="type-text">SUV</p>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" (click)="onTypeClick('coupe')">
     <mat-icon svgIcon="coupe"></mat-icon>
     <p class="type-text">Coupe</p>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" (click)="onTypeClick('sedan')">
     <mat-icon svgIcon="sedan"></mat-icon>
     <p class="type-text">Sedan</p>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" (click)="onTypeClick('truck')">
     <mat-icon svgIcon="truck"></mat-icon>
     <p class="type-text">Truck</p>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" (click)="onTypeClick('crossover')">
     <mat-icon svgIcon="crossover"></mat-icon>
     <p class="type-text">Crossover</p>
   </div>
 </div>
 
 <div class = "types-container">
-  <div class ="type-container">
+  <div class ="type-container" id="chevrolet" (click)="onBrandClick('chevrolet')">
     <mat-icon svgIcon="chevrolet"></mat-icon>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" id="ford" (click)="onBrandClick('ford')">
     <mat-icon svgIcon="ford"></mat-icon>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" id="gmc" (click)="onBrandClick('gmc')">
     <mat-icon svgIcon="gmc"></mat-icon>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" id="toyota" (click)="onBrandClick('toyota')">
     <mat-icon svgIcon="toyota"></mat-icon>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" id="honda" (click)="onBrandClick('honda')">
     <mat-icon svgIcon="honda"></mat-icon>
   </div>
-  <div class ="type-container">
+  <div class ="type-container" id="bmw" (click)="onBrandClick('bmw')">
     <mat-icon svgIcon="bmw"></mat-icon>
   </div>
 </div>

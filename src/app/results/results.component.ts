@@ -56,6 +56,8 @@ export class ResultsComponent implements OnInit {
   transmissions: TransmissionModel[] = []
   cylinders: number[] = [ 4,  6, 8, 10, 12];
   mileage: number = 400000;
+  priceMin: any;
+  priceMax: any;
 
   constructor(
     private route: ActivatedRoute,
@@ -69,22 +71,23 @@ export class ResultsComponent implements OnInit {
     const routeParams = this.route.snapshot.paramMap;
     const queryParams = this.route.snapshot.queryParamMap;
 
-    this.query = routeParams.get('id') || 'T';
+    this.query = routeParams.get('id') || '';
     this.page =  Number(queryParams.get('page')) || 1;
     this.limit = Number(queryParams.get('limit')) || 10;
 
 
-    //this.results$ = this.resultsService.getResults(this.query, this.page, this.limit);
+    let params = this.buildParams()
+    this.results$ = this.resultsService.getResults(this.query + "?" + params.toString());
 
-    this.results$ = this.url.pipe(
+   // this.results$ = this.url.pipe(
       //ignore new values if they are the same as the last value
-      distinctUntilChanged(),
+    //  distinctUntilChanged(),
 
       //switch to new value
-      switchMap((url: String) => {
-        return this.resultsService.getResults(url);
-      })
-    );
+     // switchMap((url: String) => {
+     //   return this.resultsService.getResults(url);
+    //  })
+    //);
 
     this.route.queryParams.subscribe(params => {
       this.page = params['page'] || 1;
@@ -110,7 +113,9 @@ export class ResultsComponent implements OnInit {
   search(term: String): void {
     console.log("Searching for: " + term);
     //Set observable to none to load new results
-    this.url.next(term);
+    //this.url.next(term);
+
+    this.results$ = this.resultsService.getResults(term);
   }
 
   buildMakes() : void {
@@ -159,7 +164,7 @@ export class ResultsComponent implements OnInit {
   buildDrivetrains() {
     this.resultsService.getDrivetrain().subscribe(drivetrains => {
       for (let drivetrain of drivetrains) {
-        if(drivetrain.name.toLowerCase() !== "unknown") {
+        if(drivetrain.name.toLowerCase() !== "n/a") {
           this.drivetrains.push(
             { id: drivetrain.id, name: drivetrain.name, description: drivetrain.description, selected: false }
           );
@@ -229,6 +234,11 @@ export class ResultsComponent implements OnInit {
   onChangeMileage($event: Event) {
     const selectElement = $event.target as HTMLInputElement;
     this.mileage = Number(selectElement.value);
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
   }
 
   updateCheckList(array: any[], value: any) {
@@ -347,6 +357,7 @@ export class ResultsComponent implements OnInit {
     this.page = page;
     this.limit = limit;
 
+    params.append('mileage', this.mileage.toString());
     params.append('start_year', this.startYear.toString());
     params.append('end_year',  this.endYear.toString());
     params.append('page', this.page.toString());

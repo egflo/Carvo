@@ -89,8 +89,8 @@ export class AutoCardComponent implements OnInit {
   }
 
   onClick(id: number) {
-    //this.router.navigate(['/auto', id]).then(r =>  {}).catch(e => console.log(e));
-    console.log("onClick", id);
+    console.log("onClick" + id);
+    this.router.navigate(['/auto', id]).then(r =>  {}).catch(e => console.log(e));
   }
 
   formatCurrency(value: number) : string {

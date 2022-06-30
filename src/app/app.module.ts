@@ -17,7 +17,7 @@ import {StarRatingModule} from "angular-star-rating";
 import { HomeComponent } from './home/home.component';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import {MatSelectModule} from "@angular/material/select";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatButtonToggleModule} from "@angular/material/button-toggle";
 import { ResultsComponent } from './results/results.component';
 import {MatPaginatorModule} from "@angular/material/paginator";
@@ -57,7 +57,8 @@ import { AutoCardComponent } from './auto-card/auto-card.component';
     MatToolbarModule,
     MatListModule,
     CdkAccordionModule,
-    GalleryModule
+    GalleryModule,
+    FormsModule
   ],
   providers: [
     HttpErrorHandler,

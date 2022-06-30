@@ -1,11 +1,23 @@
-<div class="card" (click)="onClick(auto.id)">
+<div class="card">
   <div class="image-container">
     <gallery id="gallery-{{auto.id}}" class="test" [thumb]="false" [counter]="false" [dots]="true"></gallery>
     <mat-icon class="favorite-icon">favorite</mat-icon>
   </div>
   <div class="card-body">
-    <h5 class="card-title">{{auto.year}} {{auto.make.name}} {{auto.model}}</h5>
-    <p class="card-text">{{formatCurrency(auto.price)}}</p>
+
+    <a class="header-link" (click)="onClick(auto.id)">
+      <h5 class="card-title">{{auto.year}} {{auto.make.name}} {{auto.model}}</h5>
+    </a>
+
+    <div class="subheader">
+      <p class="card-text">{{formatCurrency(auto.price)}}</p>
+      <div *ngIf="auto.dealer as dealer">
+        <div class="dealer-info">
+          <mat-icon>room</mat-icon>
+          <p>{{dealer.city + " " + dealer.postcode}} </p>
+        </div>
+      </div>
+    </div>
 
     <div class = "icons">
       <div class="icon-container">

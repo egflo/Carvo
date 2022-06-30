@@ -58,8 +58,6 @@ export class AutoComponent implements OnInit {
 
   }
 
-
-
   ngAfterViewInit() {
     console.log("ngAfterViewInit");
   }
