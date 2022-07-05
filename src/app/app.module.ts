@@ -27,6 +27,9 @@ import {MatListModule} from "@angular/material/list";
 import {CdkAccordionModule} from "@angular/cdk/accordion";
 import {GalleryModule} from "ng-gallery";
 import { AutoCardComponent } from './auto-card/auto-card.component';
+import {NgxSliderModule} from "@angular-slider/ngx-slider";
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
+import {Event} from "@angular/router";
 
 
 @NgModule({
@@ -58,7 +61,8 @@ import { AutoCardComponent } from './auto-card/auto-card.component';
     MatListModule,
     CdkAccordionModule,
     GalleryModule,
-    FormsModule
+    FormsModule,
+    NgxSliderModule,
   ],
   providers: [
     HttpErrorHandler,

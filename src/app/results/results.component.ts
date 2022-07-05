@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Event, Router} from "@angular/router";
 import {ResultsService} from "./results.service";
 import {Location} from '@angular/common';
 import {Auto} from "../api/auto";
@@ -22,6 +22,7 @@ import {TransmissionModel} from "../model/transmission-model";
 import {switchMap} from "rxjs/operators";
 import {Page} from "../api/page";
 import {query} from "@angular/animations";
+import {ChangeContext, LabelType, Options, PointerType} from "@angular-slider/ngx-slider";
 
 @Component({
   selector: 'app-results',
@@ -55,9 +56,33 @@ export class ResultsComponent implements OnInit {
   engines: TransmissionModel[] = [];
   transmissions: TransmissionModel[] = []
   cylinders: number[] = [ 4,  6, 8, 10, 12];
-  mileage: number = 400000;
   priceMin: any;
   priceMax: any;
+  postcode: number = 0;
+  distance: number = 0;
+
+
+  mileage: number = 400000;
+  optionsMiles: Options = {
+    floor: 0,
+    ceil: 400000,
+  };
+
+  value: number = 25000;
+  highValue: number = 550000;
+  options: Options = {
+    floor: 100,
+    ceil: 600000,
+    translate: (value: number, label: LabelType): string => {
+      switch (label) {
+        case LabelType.Low:
+          return "<b>Min price:</b> $" + value;
+        case LabelType.High:
+          return "<b>Max price:</b> $" + value;
+        default:
+          return "$" + value;
+      }
+  }};
 
   constructor(
     private route: ActivatedRoute,
@@ -133,7 +158,7 @@ export class ResultsComponent implements OnInit {
     this.resultsService.getBodyTypes().subscribe(types => {
       for (let body of types) {
         this.types.push(
-          { id: body.id, type: body.type, selected: false }
+          { id: body.id, type: body.type, selected: this.query.toLowerCase() === body.type.toLowerCase() }
         );
       }
     });
@@ -201,7 +226,7 @@ export class ResultsComponent implements OnInit {
     //this.router.navigate(['/results'], {queryParams: {page: $event.pageIndex + 1, limit: $event.pageSize}});
   }
 
-  onChangeSelect($event: Event) {
+  onChangeSelect($event: any) {
     const selectElement = $event.target as HTMLSelectElement;
     const value = selectElement.value;
 
@@ -231,14 +256,19 @@ export class ResultsComponent implements OnInit {
 
   }
 
-  onChangeMileage($event: Event) {
-    const selectElement = $event.target as HTMLInputElement;
-    this.mileage = Number(selectElement.value);
+  onChangeMileage(changeContext: ChangeContext) {
+    const value = changeContext.value;
 
     const url = this.buildURL();
     const params = this.buildParams();
 
     this.search(`${url}?${params.toString()}`);
+
+   //onst selectElement = $event.target as HTMLInputElement;
+    ///this.mileage = Number(selectElement.value);
+    //const url = this.buildURL();
+    //const params = this.buildParams();
+    //this.search(`${url}?${params.toString()}`);
   }
 
   updateCheckList(array: any[], value: any) {
@@ -250,7 +280,7 @@ export class ResultsComponent implements OnInit {
     return selected;
   }
 
-  onChangeCheck($event: Event) {
+  onChangeCheck($event: any) {
     const selectElement = $event.target as HTMLInputElement;
     const value = selectElement.value;
     const name  = selectElement.name;
@@ -288,13 +318,18 @@ export class ResultsComponent implements OnInit {
 
   }
 
-  buildURL() {
+  buildURL() : string {
     //Find selected makes
     let query = this.makes.filter(m => m.selected).map(m => m.name).join('/');
+    query += this.types.filter(t => t.selected).map(t => t.type).join('/');
+
+    if(query.length === 0) {
+      query = 'all';
+    }
     return query;
   }
 
-  buildParams(page: number = 1, limit: number = 10) {
+  buildParams(page: number = 1, limit: number = 10): URLSearchParams {
     let params: URLSearchParams = new URLSearchParams();
 
     let selectedTypes = this.types.filter(t => t.selected);
@@ -319,7 +354,6 @@ export class ResultsComponent implements OnInit {
       codes = codes.substring(0, codes.length - 1);
       params.append('fuel_code', codes);
     }
-
 
     let selectedColors = this.colors.filter(c => c.selected);
     codes = '';
@@ -354,8 +388,19 @@ export class ResultsComponent implements OnInit {
       params.append('transmission_code', codes);
     };
 
+    if(this.postcode !== 0) {
+      params.append('postcode', this.postcode.toString());
+    }
+
+    if(this.distance !== 0) {
+      params.append('distance', this.distance.toString());
+    }
+
     this.page = page;
     this.limit = limit;
+
+    params.append('price_min', this.value.toString());
+    params.append('price_max', this.highValue.toString());
 
     params.append('mileage', this.mileage.toString());
     params.append('start_year', this.startYear.toString());
@@ -365,4 +410,37 @@ export class ResultsComponent implements OnInit {
 
     return params;
   }
+
+  onPostcodeChange($event: any) {
+    const selectElement = $event.target as HTMLInputElement;
+    this.postcode = Number(selectElement.value);
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
+
+  }
+
+  onDistanceChange($event: any) {
+    const selectElement = $event.target as HTMLInputElement;
+    this.distance = Number(selectElement.value);
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
+  }
+
+  onPriceChange(changeContext: ChangeContext) {
+    const type = changeContext.pointerType == PointerType.Min ? 'min' : 'max';
+    const value = changeContext.value;
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
+
+  }
+
 }

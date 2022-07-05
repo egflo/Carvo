@@ -52,6 +52,7 @@
   display: flex;
   align-content: center;
   justify-content: space-between;
+  font-weight: bold;
 }
 
 .accordion-item-description {
