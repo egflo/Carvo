@@ -30,7 +30,21 @@ import { AutoCardComponent } from './auto-card/auto-card.component';
 import {NgxSliderModule} from "@angular-slider/ngx-slider";
 import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 import {Event} from "@angular/router";
+import {MatInputModule} from "@angular/material/input";
+import {AuthModule} from "@auth0/auth0-angular";
+import { AuthButtonComponent } from './auth-button/auth-button.component';
+import { UserProfileComponent } from './user-profile/user-profile.component';
+import {AuthService} from "./auth.service";
+import {OAuthModule} from "angular-oauth2-oidc";
 
+
+
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthHttpInterceptor } from '@auth0/auth0-angular';
+import {MatButtonModule} from "@angular/material/button";
+import {InfiniteScrollModule} from "ngx-infinite-scroll";
+import { WatchlistComponent } from './watchlist/watchlist.component';
+import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 
 @NgModule({
   declarations: [
@@ -38,36 +52,56 @@ import {Event} from "@angular/router";
     AutoComponent,
     HomeComponent,
     ResultsComponent,
-    AutoCardComponent
+    AutoCardComponent,
+    AuthButtonComponent,
+    UserProfileComponent,
+    WatchlistComponent,
   ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    MatChipsModule,
-    MatIconModule,
-    MatCardModule,
-    MatTabsModule,
-    GoogleMapsModule,
-    StarRatingModule.forRoot(),
-    MatFormFieldModule,
-    MatSelectModule,
-    ReactiveFormsModule,
-    MatButtonToggleModule,
-    MatPaginatorModule,
-    MatSidenavModule,
-    MatToolbarModule,
-    MatListModule,
-    CdkAccordionModule,
-    GalleryModule,
-    FormsModule,
-    NgxSliderModule,
-  ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        BrowserAnimationsModule,
+        MatChipsModule,
+        MatIconModule,
+        MatCardModule,
+        MatTabsModule,
+        GoogleMapsModule,
+        StarRatingModule.forRoot(),
+        MatFormFieldModule,
+        MatSelectModule,
+        ReactiveFormsModule,
+        MatButtonToggleModule,
+        MatPaginatorModule,
+        MatSidenavModule,
+        MatToolbarModule,
+        MatListModule,
+        CdkAccordionModule,
+        GalleryModule,
+        FormsModule,
+        NgxSliderModule,
+        MatInputModule,
+        InfiniteScrollModule ,
+        // Import the module into the application, with configuration
+        AuthModule.forRoot({
+            domain: 'dev-ncqu2zod.us.auth0.com',
+            clientId: 'EHic8gWWdFvWRvmdnW6wlslUrG86Dp33',
+            httpInterceptor: {
+                allowedList: ['https://dev-ncqu2zod.us.auth0.com/api/v2/'],
+            },
+        }),
+        OAuthModule.forRoot(),
+        MatButtonModule,
+        MatProgressSpinnerModule,
+    ],
   providers: [
+    { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
     HttpErrorHandler,
     MessageService,
+    AuthService,
   ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
+
+platformBrowserDynamic().bootstrapModule(AppModule);

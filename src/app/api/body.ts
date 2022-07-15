@@ -1,6 +1,8 @@
+import {BodyType} from "./body-type";
+
 export interface Body {
   id: number;
-  bodyType: string;
+  bodyType: BodyType;
   length: string;
   width: string;
   height: string;

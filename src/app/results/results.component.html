@@ -1,7 +1,7 @@
 
 <div class="container-main">
   <div class="filter-container">
-    <cdk-accordion class="example-accordion">
+    <cdk-accordion class="accordion">
       <cdk-accordion-item
         #accordionItemLocation="cdkAccordionItem"
         class="accordion-item"
@@ -13,8 +13,12 @@
         <div class="accordion-item-header" (click)="accordionItemLocation.toggle()">
           Location
           <span class="accordion-item-description">
-                Click to {{ accordionItemLocation.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -56,8 +60,12 @@
         <div class="accordion-item-header" (click)="accordionItemYear.toggle()">
           Year
           <span class="accordion-item-description">
-                Click to {{ accordionItemYear.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -89,8 +97,12 @@
         <div class="accordion-item-header" (click)="accordionItemMake.toggle()">
           Make
           <span class="accordion-item-description">
-                Click to {{ accordionItemMake.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -121,8 +133,12 @@
         <div class="accordion-item-header" (click)="accordionItemBody.toggle()">
           Body Type
           <span class="accordion-item-description">
-                Click to {{ accordionItemBody.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -153,8 +169,12 @@
         <div class="accordion-item-header" (click)="accordionItemFuel.toggle()">
           Fuel Type
           <span class="accordion-item-description">
-                Click to {{ accordionItemFuel.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -185,8 +205,12 @@
         <div class="accordion-item-header" (click)="accordionItemMiles.toggle()">
           Mileage
           <span class="accordion-item-description">
-                Click to {{ accordionItemMiles.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -212,8 +236,12 @@
         <div class="accordion-item-header" (click)="accordionItemColor.toggle()">
           Exterior Color
           <span class="accordion-item-description">
-                Click to {{ accordionItemColor.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -242,8 +270,12 @@
         <div class="accordion-item-header" (click)="accordionItemDrivetrain.toggle()">
           Drivetrain
           <span class="accordion-item-description">
-                Click to {{ accordionItemDrivetrain.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -274,8 +306,12 @@
         <div class="accordion-item-header" (click)="accordionItemTransmission.toggle()">
           Transmission
           <span class="accordion-item-description">
-                Click to {{ accordionItemTransmission.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -306,8 +342,12 @@
         <div class="accordion-item-header" (click)="accordionItemPrice.toggle()">
           Price
           <span class="accordion-item-description">
-                Click to {{ accordionItemPrice.expanded ? 'close' : 'open' }}
-            </span>
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
         </div>
         <div
           class="accordion-item-body"
@@ -341,7 +381,10 @@
         </div>
       </div>
       <ng-template #loading>
-        <p>Loading...</p>
+        <mat-spinner
+          class="spinner"
+          [diameter]="100"
+          [strokeWidth]="4"></mat-spinner>
       </ng-template>
     </div>
   </div>

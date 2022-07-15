@@ -7,6 +7,10 @@ import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
 import { Router, ParamMap } from '@angular/router';
 import {GalleryComponent, GalleryItem, ImageItem} from "ng-gallery";
+import {BookmarkRequestModel} from "../model/bookmark-request-model";
+import {AuthService} from "../auth.service";
+import {Bookmark} from "../api/bookmark";
+import {Response} from "../api/response";
 
 
 @Component({
@@ -18,6 +22,7 @@ import {GalleryComponent, GalleryItem, ImageItem} from "ng-gallery";
 export class AutoComponent implements OnInit {
   autoObs!: Observable<Auto>;
   images$!: Observable<GalleryItem[]>;
+  bookmark$!: Observable<Bookmark>;
 
   center: google.maps.LatLngLiteral = {lat: 50.06465, lng: 19.94498};
   options: google.maps.MapOptions = {
@@ -29,37 +34,59 @@ export class AutoComponent implements OnInit {
     minZoom: 8,
   }
   zoom: number = 12;
+  bookmarkExists: Boolean = false;
+  bookmarkId: number = 0;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private autoService: AutoService
+    private autoService: AutoService,
+    private auth: AuthService,
   ) {}
 
   ngOnInit(): void {
     const routeParams = this.route.snapshot.paramMap;
     const id = Number(routeParams.get('id'));
 
-    this.autoService.getAuto(Number(id)).subscribe(auto => {
-      this.autoObs = of(auto);
-      if(auto?.dealer) {
-        let dealer = auto.dealer;
-        this.center = {lat: dealer.latitude, lng: dealer.longitude};
+    this.autoService.getAuto(Number(id)).subscribe(response => {
+      const keys = response.headers.keys();
+      if(response.status == 200) {
+        this.autoObs = of(response.body!);
+        if(response.body?.dealer) {
+          let dealer = response.body.dealer;
+          this.center = {lat: dealer.latitude, lng: dealer.longitude};
+        }
+        this.images$ = this.autoObs.pipe(
+          switchMap(auto => {
+            return of(this.buildImageItems(auto));
+          }));
       }
-
-      this.images$ = this.autoObs.pipe(
-        switchMap(auto => {
-          return of(this.buildImageItems(auto));
-        }));
+      else {
+        this.router.navigate(['/']);
+      }
     });
 
-
-
+    if(this.auth.isAuthenticated()) {
+      this.getBookmark(id);
+    }
   }
 
   ngAfterViewInit() {
     console.log("ngAfterViewInit");
+  }
+
+  getBookmark(id: Number): void {
+    this.autoService.existBookmark(id).subscribe(response => {
+      const keys = response.headers.keys();
+      if(response.status == 200) {
+        this.bookmark$ = of(response.body!);
+        this.bookmarkExists = true;
+      }
+      else {
+        this.bookmarkExists = false;
+      }
+    });
   }
 
   buildImageItems(auto: Auto): GalleryItem[] {
@@ -160,6 +187,65 @@ export class AutoComponent implements OnInit {
     else {
       return auto.mainPictureUrl;
     }
+  }
 
+  onBookmarkClick(id: number) {
+
+    if(!this.auth.isAuthenticated()) {
+      this.auth.login();
+    }
+    else {
+      const request = {
+        id: this.bookmarkId,
+        autoId: id,
+        userId:1
+      } as BookmarkRequestModel;
+
+      if(this.bookmarkExists) {
+        this.autoService.removeBookmark(request).subscribe(response => {
+          console.log(response.body);
+          if(response.status == 200) {
+            this.bookmarkExists = false;
+          }
+          else {
+            console.log(response.body);
+          }
+        });
+      }
+      else {
+        this.autoService.addBookmark(request).subscribe(response => {
+          if(response.status == 200) {
+            this.bookmarkExists = true;
+            this.bookmark$ = of(response.body!);
+            this.bookmarkId = response.body!.id;
+          }
+          else {
+            console.log(response.body);
+          }
+        });
+      }
+    }
+
+
+  }
+
+  formatCurrency(value: number) : string {
+    // Create our number formatter.
+    const formatter = new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      // These options are needed to round to whole numbers if that's what you want.
+      //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
+      maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
+    });
+    return formatter.format(value);
+  }
+
+  formatRating(rating: number | undefined) {
+
+    if(rating == undefined) {
+      return "";
+    }
+    return Math.round(rating * 10) / 10;
   }
 }

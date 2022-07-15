@@ -1,0 +1,22 @@
+.search-results {
+  height: 26rem;
+  padding-bottom: 1rem;
+  padding-top:  1rem;
+
+  overflow-y: hidden;
+  display: flex;
+  flex-wrap: nowrap;
+  overflow-x: scroll;
+  width: 75vw;
+
+}
+
+.data {
+}
+
+.title {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+
+}

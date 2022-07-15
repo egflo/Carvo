@@ -1,7 +1,14 @@
 <div class="card">
   <div class="image-container">
     <gallery id="gallery-{{auto.id}}" class="test" [thumb]="false" [counter]="false" [dots]="true"></gallery>
-    <mat-icon class="favorite-icon">favorite</mat-icon>
+
+    <button class="favorite-button"
+            mat-icon-button
+            [color]="bookmarkExists ? 'warn' : 'accent'"
+            aria-label="Add to Watchlist"
+            (click)="onBookmarkClick(auto.id)">
+      <mat-icon>favorite</mat-icon>
+    </button>
   </div>
   <div class="card-body">
 

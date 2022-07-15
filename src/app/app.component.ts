@@ -148,5 +148,13 @@ export class AppComponent {
       "bmw",
       this.domSanitizer.bypassSecurityTrustResourceUrl("assets/brands/bmw_icon.svg")
     );
+    this.matIconRegistry.addSvgIcon(
+      "mercedes",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/brands/mercedes_icon.svg")
+    ),
+    this.matIconRegistry.addSvgIcon(
+      "audi",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/brands/audi_icon.svg")
+    );
   }
 }

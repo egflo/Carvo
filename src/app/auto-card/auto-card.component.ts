@@ -5,6 +5,9 @@ import {Location} from "@angular/common";
 import {Observable, of} from "rxjs";
 import {Gallery, GalleryItem, GalleryRef, ImageItem} from "ng-gallery";
 import {switchMap} from "rxjs/operators";
+import {AutoCardService} from "./auto-card.service";
+import {BookmarkRequestModel} from "../model/bookmark-request-model";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-auto-card',
@@ -14,25 +17,43 @@ import {switchMap} from "rxjs/operators";
 export class AutoCardComponent implements OnInit {
   @Input() auto!: Auto;
   images$!: Observable<GalleryItem[]>;
-
+  alertsEnabled: any;
+  bookmarkExists: Boolean = false;
+  bookmarkId: number = 0;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private location: Location,
-    private gallery: Gallery
+    private gallery: Gallery,
+    private service: AutoCardService,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
     const galleryRef: GalleryRef = this.gallery.ref('gallery-' + this.auto.id);
-    //this.images$ = of(this.buildImageItems(this.auto));
-
     galleryRef.load(this.buildImageItems(this.auto));
+
+    if(this.auth.isAuthenticated()) {
+      this.getBookmark();
+    }
+  }
+
+  getBookmark(): void {
+    this.service.existBookmark(this.auto.id).subscribe(response => {
+      const keys = response.headers.keys();
+      if(response.status == 200) {
+        this.bookmarkExists = true;
+        this.bookmarkId = response.body!.id;
+      }
+      else {
+        this.bookmarkExists = false;
+      }
+    });
   }
 
   buildImageItems(auto: Auto): GalleryItem[] {
     let items = []
-
     if(auto.stockImage) {
 
       if (auto.stockImage.imageAngularFront) {
@@ -70,15 +91,6 @@ export class AutoCardComponent implements OnInit {
       }
     }
 
-
-    for(let i = 0; i < auto.images.length; i++) {
-      let image = auto.images[i];
-      //items.push(new ImageItem({
-      //  thumb: image.url,
-      //  src: image.url,
-     // }))
-    }
-
     if(items.length == 0) {
       items.push(new ImageItem({
         src: "/assets/images/fallback.png",
@@ -110,11 +122,24 @@ export class AutoCardComponent implements OnInit {
     return formatter.format(value);
   }
 
-  getImage(auto: Auto) {
-    if (auto.images && auto.images.length > 0) {
-      return auto.images[0].url;
-    }
-    return "https://via.placeholder.com/150";
+  onBookmarkClick(id: number): void {
+    console.log("onBookmarkClick" + id);
+    if(this.auth.isAuthenticated()) {
+      const request = {
+        autoId: id,
+        userId: 1
+      } as BookmarkRequestModel;
 
+      this.service.updateBookmark(request).subscribe(response => {
+        if (response.status == 200) {
+          this.getBookmark();
+        } else {
+          this.bookmarkExists = false;
+        }
+      });
+    }
+    else {
+      console.log("Not authenticated");
+    }
   }
 }

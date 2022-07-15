@@ -1,6 +1,14 @@
 
+.favorite-button {
+  position: absolute;
+  top: 1rem;
+  left: 2rem;
+  z-index: 1;
+  cursor: pointer;
+}
+
+
 .container-auto {
-  border: 1px solid #ddd;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -25,9 +33,51 @@
   height: 40vh;
 }
 
+
+.info-header {
+  padding: 1rem;
+}
+
 .header {
-  text-align: center;
+  text-align: left;
   position: relative;
+  font-size: 2rem;
+  font-weight: bold;
+  margin: 0 auto;
+  color: white;
+}
+
+.subheader {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+  width: 100%;
+}
+
+.sub-text {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: white;
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.location-icon {
+  fill: white;
+  color: white;
+  margin: 0;
+}
+
+.dealer-info p {
+  margin: 0;
+  color: white;
+  font-weight: bold;
+  font-size: 1.0rem;
+}
+
+.dealer-info {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
 
 .image-container {
@@ -36,14 +86,14 @@
   justify-content: center;
   align-items: center;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-  border-radius: 5rem;
+  border-radius: 1rem;
   background-color: white;
 }
 
 .test {
   width: 75vw;
   height: 40vh;
-  border-radius: 5rem;
+  border-radius: 1rem;
   background-color: white;
 }
 
@@ -88,7 +138,6 @@ mat-chip {
 }
 
 mat-icon {
-  margin-right: 0.5rem;
 }
 
 .card-title {
@@ -162,4 +211,34 @@ mat-icon {
 
 .card {
   width: 75vw;
+}
+
+
+.icon-chip {
+  margin-right: 0.5rem;
+}
+
+.star-icon {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  color: yellow;
+  fill: yellow;
+  margin-left: 0.5rem;
+}
+
+.dealer-info span {
+  color: white;
+  font-weight: bold;
+  font-size: 1.0rem;
+}
+
+
+.bookmarked {
+  color: red;
+}
+
+.not-bookmarked {
+  color: lightgrey;
 }

@@ -29,11 +29,12 @@
   object-fit: cover;
 }
 
-.image-container mat-icon {
+.favorite-button {
   position: absolute;
-  top: 5%;
-  left: 5%;
-  color: lightgrey;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  cursor: pointer;
 }
 
 .card {
@@ -48,6 +49,9 @@
   font-weight: bold;
   margin-bottom: 0.5rem;
   color: #1976d2;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .card-text {
@@ -83,6 +87,7 @@
 }
 
 .header-link {
+  cursor: pointer;
   text-decoration: none;
 }
 

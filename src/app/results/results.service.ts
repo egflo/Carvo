@@ -10,16 +10,8 @@ import {Fuel} from "../api/fuel";
 import {Color} from "../api/color";
 import {Drivetrain} from "../api/drivetrain";
 import {Transmission} from "../api/transmission";
+import {AuthService} from "../auth.service";
 
-
-const httpOptions = {
-  headers: new HttpHeaders({
-    'Content-Type':  'application/json',
-    'Accept': 'application/json',
-    'Access-Control-Allow-Origin': '*',
-    Authorization: 'my-auth-token'
-  })
-};
 
 
 @Injectable({
@@ -28,57 +20,67 @@ const httpOptions = {
 export class ResultsService {
   private handleError: HandleError;
 
+  private httpOptions = {
+    headers: new HttpHeaders({
+      'Content-Type':  'application/json',
+      'Accept': 'application/json',
+      'Access-Control-Allow-Origin': '*',
+    })
+  };
   constructor(
     private http: HttpClient,
-    httpErrorHandler: HttpErrorHandler) {
+    private auth: AuthService,
+    httpErrorHandler: HttpErrorHandler)
+  {
     this.handleError = httpErrorHandler.createHandleError('ResultService');
   }
 
-
   //page=${page}&limit=${limit}
   getResults(query:String): Observable<Page> {
+
     let url = `http://localhost:8080/auto/search/${encodeURI(query.toString())}`;
     console.log(url);
-    return this.http.get<Page>(url, httpOptions).pipe(
+
+    return this.http.get<Page>(url,this.httpOptions).pipe(
       catchError(this.handleError<Page>(`getResults`))
     );}
 
   getMakes(): Observable<[Make]> {
     let url = `http://localhost:8080/make/all`;
-    return this.http.get<[Make]>(url, httpOptions).pipe(
+    return this.http.get<[Make]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Make]>(`getMakes`))
     );}
 
   getBodyTypes(): Observable<[BodyType]> {
     let url = `http://localhost:8080/body/type/all`;
-    return this.http.get<[BodyType]>(url, httpOptions).pipe(
+    return this.http.get<[BodyType]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[BodyType]>(`getBodyTypes`))
     );}
 
   getFuelTypes(): Observable<[Fuel]> {
     let url = `http://localhost:8080/auto/fuel/all`;
-    return this.http.get<[Fuel]>(url, httpOptions).pipe(
+    return this.http.get<[Fuel]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Fuel]>(`getFuelTypes`))
     );
   }
 
   getColors(): Observable<[Color]> {
     let url = `http://localhost:8080/auto/color/all`;
-    return this.http.get<[Color]>(url, httpOptions).pipe(
+    return this.http.get<[Color]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Color]>(`getColors`))
     );
   }
 
   getDrivetrain(): Observable<[Drivetrain]> {
     let url = `http://localhost:8080/auto/drivetrain/all`;
-    return this.http.get<[Drivetrain]>(url, httpOptions).pipe(
+    return this.http.get<[Drivetrain]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Drivetrain]>(`getDrivetrain`))
     );
   }
 
   getTransmissions(): Observable<[Transmission]> {
     let url = `http://localhost:8080/auto/transmission/all`;
-    return this.http.get<[Transmission]>(url, httpOptions).pipe(
+    return this.http.get<[Transmission]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Transmission]>(`getTransmissions`))
     );
   }

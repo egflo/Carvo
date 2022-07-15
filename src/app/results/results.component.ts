@@ -2,15 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute, Event, Router} from "@angular/router";
 import {ResultsService} from "./results.service";
 import {Location} from '@angular/common';
-import {Auto} from "../api/auto";
 import {PageEvent} from "@angular/material/paginator";
-import {Make} from "../api/make";
-import {BodyType} from "../api/body-type";
-import {Fuel} from "../api/fuel";
-import {Color} from "../api/color";
-import {Drivetrain} from "../api/drivetrain";
-import {Engine} from "../api/engine";
-import {Transmission} from "../api/transmission";
 import {FormBuilder} from "@angular/forms";
 import {MakeModel} from "../model/make-model";
 import {distinctUntilChanged, Observable, Subject} from "rxjs";
@@ -19,10 +11,9 @@ import {FuelModel} from "../model/fuel-model";
 import {ColorModel} from "../model/color-model";
 import {DrivetrainModel} from "../model/drivetrain-model";
 import {TransmissionModel} from "../model/transmission-model";
-import {switchMap} from "rxjs/operators";
 import {Page} from "../api/page";
-import {query} from "@angular/animations";
 import {ChangeContext, LabelType, Options, PointerType} from "@angular-slider/ngx-slider";
+import {AuthService} from "../auth.service";
 
 @Component({
   selector: 'app-results',
@@ -89,7 +80,8 @@ export class ResultsComponent implements OnInit {
     private router: Router,
     private location: Location,
     private resultsService: ResultsService,
-    private formBuilder: FormBuilder
+    private formBuilder: FormBuilder,
+    private auth: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -133,6 +125,10 @@ export class ResultsComponent implements OnInit {
     this.buildDrivetrains();
 
     this.buildTransmissions();
+  }
+
+  login(): void {
+    this.auth.login();
   }
 
   search(term: String): void {
@@ -263,12 +259,6 @@ export class ResultsComponent implements OnInit {
     const params = this.buildParams();
 
     this.search(`${url}?${params.toString()}`);
-
-   //onst selectElement = $event.target as HTMLInputElement;
-    ///this.mileage = Number(selectElement.value);
-    //const url = this.buildURL();
-    //const params = this.buildParams();
-    //this.search(`${url}?${params.toString()}`);
   }
 
   updateCheckList(array: any[], value: any) {
@@ -320,8 +310,7 @@ export class ResultsComponent implements OnInit {
 
   buildURL() : string {
     //Find selected makes
-    let query = this.makes.filter(m => m.selected).map(m => m.name).join('/');
-    query += this.types.filter(t => t.selected).map(t => t.type).join('/');
+    let query = this.makes.filter(m => m.selected).map(m => m.name).join('/') + this.types.filter(t => t.selected).map(t => t.type).join('/');
 
     if(query.length === 0) {
       query = 'all';

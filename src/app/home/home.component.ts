@@ -23,6 +23,7 @@ export class HomeComponent implements OnInit {
   matcher = new ErrorStateMatcher();
   makes: [Make] | undefined
   models: [String] | undefined
+  modelsDisabled: boolean = true;
 
   constructor(
     private route: ActivatedRoute,
@@ -48,6 +49,7 @@ export class HomeComponent implements OnInit {
     console.log("getAllModelsFromMake: " + make);
     this.homeService.getAllModelsFromMake(make).subscribe(models => {
       this.models = models;
+      this.modelsDisabled = false;
     });
   }
 
@@ -71,4 +73,6 @@ export class HomeComponent implements OnInit {
       console.log("navigation success");
     });
   }
+
+
 }

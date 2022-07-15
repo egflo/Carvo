@@ -31,11 +31,11 @@
 }
 
 
-.example-accordion {
+.accordion {
   margin: 0 auto;
   display: block;
   width: 400px;
-  background-color: #f1f1f1;
+  background-color: white;
 
 }
 
@@ -58,6 +58,7 @@
 .accordion-item-description {
   font-size: 0.85em;
   color: #999;
+  height: 1rem;
 }
 
 .accordion-item-header,
