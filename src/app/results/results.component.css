@@ -30,10 +30,15 @@
   max-width: 100%;
 }
 
-
-.accordion {
+.mat-card {
+  width: 400px;
   margin: 0 auto;
   display: block;
+  padding: 0;
+}
+
+.accordion {
+
   width: 400px;
   background-color: white;
 
@@ -210,4 +215,12 @@
   height: 25rem;
   overflow: auto;
   padding: 0.5rem;
+}
+
+.filter-chips-title {
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.filter-chips-content {
+  padding: 1rem;
 }

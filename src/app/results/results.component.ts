@@ -14,6 +14,7 @@ import {TransmissionModel} from "../model/transmission-model";
 import {Page} from "../api/page";
 import {ChangeContext, LabelType, Options, PointerType} from "@angular-slider/ngx-slider";
 import {AuthService} from "../auth.service";
+import {SearchModel} from "../model/search-model";
 
 @Component({
   selector: 'app-results',
@@ -74,6 +75,14 @@ export class ResultsComponent implements OnInit {
           return "$" + value;
       }
   }};
+  chips: SearchModel[] = [];
+
+  conditions: any[] = [
+    {name: 'New', value: 'isNew'},
+    {name: 'Used', value: 'isUsed'},
+    {name: 'Manufacturer Certified', value: 'isOemcpo'},
+    {name: 'Third-Party Certified', value: 'isCpo'},
+  ];
 
   constructor(
     private route: ActivatedRoute,
@@ -91,7 +100,6 @@ export class ResultsComponent implements OnInit {
     this.query = routeParams.get('id') || '';
     this.page =  Number(queryParams.get('page')) || 1;
     this.limit = Number(queryParams.get('limit')) || 10;
-
 
     let params = this.buildParams()
     this.results$ = this.resultsService.getResults(this.query + "?" + params.toString());
@@ -125,6 +133,12 @@ export class ResultsComponent implements OnInit {
     this.buildDrivetrains();
 
     this.buildTransmissions();
+
+  }
+
+  ngAfterViewInit(): void {
+    console.log("After view init");
+    this.fillChiplist();
   }
 
   login(): void {
@@ -147,7 +161,9 @@ export class ResultsComponent implements OnInit {
             { id: make.id, name: make.name, selected: this.query.toLowerCase() === make.name.toLowerCase() }
           );
         }
-      } });
+      }
+      this.fillChiplist()
+    });
   }
 
   buildBodyTypes(): void {
@@ -157,6 +173,8 @@ export class ResultsComponent implements OnInit {
           { id: body.id, type: body.type, selected: this.query.toLowerCase() === body.type.toLowerCase() }
         );
       }
+
+      this.fillChiplist()
     });
   }
 
@@ -176,7 +194,7 @@ export class ResultsComponent implements OnInit {
     this.resultsService.getColors().subscribe(colors => {
       for (let color of colors) {
         this.colors.push(
-          { id: color.id, name: color.name, selected: false }
+          { id: color.id, name: color.name.toLowerCase(), selected: false }
         );
       }
     });
@@ -275,6 +293,7 @@ export class ResultsComponent implements OnInit {
     const value = selectElement.value;
     const name  = selectElement.name;
 
+    console.log(`${name} ${value}`);
     if(name === 'make') {
       let object = this.makes.find(m => m.id === Number(value));
       object!.selected = !object!.selected;
@@ -301,19 +320,37 @@ export class ResultsComponent implements OnInit {
       object!.selected = !object!.selected;
     }
 
+    if(name === 'condition') {
+      let object = this.conditions.find(c => c.value === value);
+      object!.selected = !object!.selected;
+    }
+
     const url = this.buildURL();
     const params = this.buildParams();
 
+    this.fillChiplist();
     this.search(`${url}?${params.toString()}`);
 
   }
 
   buildURL() : string {
     //Find selected makes
-    let query = this.makes.filter(m => m.selected).map(m => m.name).join('/') + this.types.filter(t => t.selected).map(t => t.type).join('/');
+    let make_query = this.makes.filter(m => m.selected).map(m => m.name).join('/')
+    let type_query = this.types.filter(t => t.selected).map(t => t.type).join('/');
 
-    if(query.length === 0) {
+    let query = "";
+
+    if(make_query.length == 0 && type_query.length == 0) {
       query = 'all';
+    }
+    else if(make_query.length > 0 && type_query.length == 0) {
+      query = make_query;
+    }
+    else if(make_query.length == 0 && type_query.length > 0) {
+      query = type_query;
+    }
+    else {
+      query = `${make_query}/${type_query}`;
     }
     return query;
   }
@@ -385,6 +422,17 @@ export class ResultsComponent implements OnInit {
       params.append('distance', this.distance.toString());
     }
 
+    let selectedConditions = this.conditions.filter(c => c.selected);
+    codes = '';
+    for(let condition of selectedConditions) {
+      codes += condition.value + "_";
+    }
+
+    if(selectedConditions.length > 0) {
+      codes = codes.substring(0, codes.length - 1);
+      params.append('condition_code', codes);
+    }
+
     this.page = page;
     this.limit = limit;
 
@@ -432,4 +480,129 @@ export class ResultsComponent implements OnInit {
 
   }
 
+  remove(item: SearchModel): void {
+    console.log(item)
+    if(item.type === 'make') {
+      let object = this.makes.find(m => m.name === item.label);
+      object!.selected = !object!.selected;
+    }
+    if(item.type === 'body') {
+      let object = this.types.find(t => t.type === item.label);
+      object!.selected = !object!.selected;
+    }
+    if(item.type === 'fuel') {
+      let object = this.fuels.find(f => f.type === item.label);
+      object!.selected = !object!.selected;
+    }
+
+    if(item.type === 'color') {
+      let object = this.colors.find(c => c.name === item.label);
+      object!.selected = !object!.selected;
+    }
+
+    if(item.type === 'drivetrain') {
+      let object = this.drivetrains.find(d => d.name === item.label);
+      object!.selected = !object!.selected;
+    }
+
+    if(item.type === 'transmission') {
+      let object = this.transmissions.find(t => t.type === item.label);
+      object!.selected = !object!.selected;
+    }
+
+    if(item.type === 'condition') {
+      let object = this.conditions.find(c => c.name === item.label);
+      object!.selected = !object!.selected;
+    }
+
+    this.fillChiplist();
+  }
+
+  fillChiplist() {
+
+    this.chips = [];
+
+    let makes = this.makes.filter(m => m.selected);
+    let types = this.types.filter(t => t.selected);
+    let fuels = this.fuels.filter(f => f.selected);
+    let colors = this.colors.filter(c => c.selected);
+    let drivetrains = this.drivetrains.filter(d => d.selected);
+    let transmissions = this.transmissions.filter(t => t.selected);
+    let conditions = this.conditions.filter(c => c.selected);
+
+    for (let make of makes) {
+      this.chips.push(
+        {
+          label: make.name,
+          type: 'make',
+          selected: true
+        }
+      );
+    }
+
+    for (let type of types) {
+      this.chips.push(
+        {
+          label: type.type,
+          type: 'body',
+          selected: true
+        }
+      );
+    }
+
+    for (let fuel of fuels) {
+      this.chips.push(
+        {
+          label: fuel.type,
+          type: 'fuel',
+          selected: true
+        }
+      );
+    }
+
+    for (let color of colors) {
+      this.chips.push(
+        {
+          label: color.name,
+          type: 'color',
+          selected: true
+        }
+      );
+    }
+
+    for (let drivetrain of drivetrains) {
+      this.chips.push(
+        {
+          label: drivetrain.name,
+          type: 'drivetrain',
+          selected: true
+        }
+      );
+    }
+
+    for (let transmission of transmissions) {
+      this.chips.push(
+        {
+          label: transmission.type,
+          type: 'transmission',
+          selected: true
+        }
+      );
+    }
+
+    for (let condition of conditions) {
+      this.chips.push(
+        {
+          label: condition.name,
+          type: 'condition',
+          selected: true
+        }
+      );
+    }
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
+  }
 }
