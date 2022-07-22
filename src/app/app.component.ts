@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { MatIconRegistry } from "@angular/material/icon";
 import { DomSanitizer } from "@angular/platform-browser";
+import {Router} from "@angular/router";
+import {Location} from "@angular/common";
 
 
 @Component({
@@ -10,7 +12,10 @@ import { DomSanitizer } from "@angular/platform-browser";
 })
 export class AppComponent {
   title = 'Carvo';
-  constructor(private matIconRegistry: MatIconRegistry
+  constructor(
+    private router: Router,
+    private location: Location,
+    private matIconRegistry: MatIconRegistry
     , private domSanitizer: DomSanitizer) {
       this.matIconRegistry.addSvgIcon(
         "wheel",
@@ -156,5 +161,13 @@ export class AppComponent {
       "audi",
       this.domSanitizer.bypassSecurityTrustResourceUrl("assets/brands/audi_icon.svg")
     );
+  }
+
+  onFavoriteClick() {
+    this.router.navigate(["/favorites"]);
+  }
+
+  onUserClick() {
+    this.router.navigate(["/user"]);
   }
 }

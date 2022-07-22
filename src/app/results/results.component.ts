@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import {ActivatedRoute, Event, Router} from "@angular/router";
+import {Component, OnInit} from '@angular/core';
+import {ActivatedRoute, Router} from "@angular/router";
 import {ResultsService} from "./results.service";
 import {Location} from '@angular/common';
 import {PageEvent} from "@angular/material/paginator";
 import {FormBuilder} from "@angular/forms";
 import {MakeModel} from "../model/make-model";
-import {distinctUntilChanged, Observable, Subject} from "rxjs";
+import {Observable, Subject} from "rxjs";
 import {BodyModel} from "../model/body-model";
 import {FuelModel} from "../model/fuel-model";
 import {ColorModel} from "../model/color-model";
@@ -15,6 +15,8 @@ import {Page} from "../api/page";
 import {ChangeContext, LabelType, Options, PointerType} from "@angular-slider/ngx-slider";
 import {AuthService} from "../auth.service";
 import {SearchModel} from "../model/search-model";
+import {Direction} from "../model/direction";
+import {Bookmark} from "../api/bookmark";
 
 @Component({
   selector: 'app-results',
@@ -35,11 +37,13 @@ export class ResultsComponent implements OnInit {
   pageSizeOptions: number[] = [5, 10, 25, 100];
 
   //Filters
-  startYears: number[] = [];
-  endYears: number[] = [];
+  startYears: any[] = [];
+  endYears: any[] = [];
+  defaultYear: String = "Any";
+  startYear: String = this.defaultYear;
+  endYear: String = this.defaultYear;
 
-  startYear: number = 1950;
-  endYear: number = new Date().getFullYear();
+
   makes: MakeModel[] = [];
   types: BodyModel[] = [];
   fuels: FuelModel[] = [];
@@ -54,11 +58,13 @@ export class ResultsComponent implements OnInit {
   distance: number = 0;
 
 
-  mileage: number = 400000;
+  defaultMileage: number = 250000;
+  mileage: number = this.defaultMileage;
   optionsMiles: Options = {
     floor: 0,
     ceil: 400000,
   };
+
 
   value: number = 25000;
   highValue: number = 550000;
@@ -78,11 +84,28 @@ export class ResultsComponent implements OnInit {
   chips: SearchModel[] = [];
 
   conditions: any[] = [
-    {name: 'New', value: 'isNew'},
-    {name: 'Used', value: 'isUsed'},
-    {name: 'Manufacturer Certified', value: 'isOemcpo'},
-    {name: 'Third-Party Certified', value: 'isCpo'},
+    {id:1, name: 'New', value: 'isNew'},
+    {id: 2, name: 'Used', value: 'isUsed'},
+    {id: 3, name: 'Manufacturer Certified', value: 'isOemcpo'},
+    {id: 4, name: 'Third-Party Certified', value: 'isCpo'},
   ];
+
+
+  sort: any = "id";
+  direction: Direction = Direction.ASC;
+  selectedSort: any;
+  sortable: any = [
+    {id: 0, name: 'Relevance'},
+    {id: 1, name: 'Price Low to High'},
+    {id: 2, name: 'Price High to Low'},
+    {id: 3, name: 'Year Low to High'},
+    {id: 4, name: 'Year High to Low'},
+    {id: 5, name: 'Mileage Low to High'},
+    {id: 6, name: 'Mileage High to Low'},
+  ];
+
+
+  bookmarks: Bookmark[] = [];
 
   constructor(
     private route: ActivatedRoute,
@@ -113,6 +136,10 @@ export class ResultsComponent implements OnInit {
      //   return this.resultsService.getResults(url);
     //  })
     //);
+
+    this.resultsService.getBookmarks().subscribe(bookmarks => {
+      this.bookmarks = bookmarks;
+    });
 
     this.route.queryParams.subscribe(params => {
       this.page = params['page'] || 1;
@@ -219,9 +246,9 @@ export class ResultsComponent implements OnInit {
   }
 
   generateArrayYears(startYear: number, endYear: number) {
-    let years = [];
+    let years = [this.defaultYear];
     for (let i = startYear; i <= endYear; i++) {
-      years.push(i);
+      years.push(String(i));
     }
     return years;
   }
@@ -244,24 +271,31 @@ export class ResultsComponent implements OnInit {
     const selectElement = $event.target as HTMLSelectElement;
     const value = selectElement.value;
 
+
     //if id is start year
     if(selectElement.id.includes("start-year")) {
-
-      this.startYear = Number(value);
-
-      //this.startYears = this.generateArrayYears(Number(value), new Date().getFullYear());
-      //let start = this.startYears[0];
-      //this.endYears = this.generateArrayYears(start, new Date().getFullYear()).reverse();
+      this.startYear = value;
     }
     //if id is end year
     if(selectElement.id.includes("end-year")) {
+      this.endYear = value;
 
-      this.endYear = Number(value);
 
-      let start = this.startYears[0];
-      let end = Number(value);
-      this.endYears = this.generateArrayYears(start, end).reverse();
+      let start = this.startYear
+      let end = this.endYear
+
+      if(start != this.defaultYear && end != this.defaultYear) {
+        this.endYears = this.generateArrayYears(Number(start), Number(end));
+      }
+
+      else if (start == this.defaultYear) {
+        this.endYears = this.generateArrayYears(Number(start), Number(end));
+      }
+
+
     }
+
+    this.fillChiplist();
 
     const url = this.buildURL();
     const params = this.buildParams();
@@ -272,10 +306,12 @@ export class ResultsComponent implements OnInit {
 
   onChangeMileage(changeContext: ChangeContext) {
     const value = changeContext.value;
+    this.mileage = value;
+
+    this.fillChiplist();
 
     const url = this.buildURL();
     const params = this.buildParams();
-
     this.search(`${url}?${params.toString()}`);
   }
 
@@ -440,11 +476,19 @@ export class ResultsComponent implements OnInit {
     params.append('price_max', this.highValue.toString());
 
     params.append('mileage', this.mileage.toString());
-    params.append('start_year', this.startYear.toString());
-    params.append('end_year',  this.endYear.toString());
+
+    if(this.startYear !== this.defaultYear) {
+      params.append('start_year', this.startYear.toString());
+    }
+    if(this.endYear !== this.defaultYear) {
+      params.append('end_year', this.endYear.toString());
+    }
+
     params.append('page', this.page.toString());
     params.append('limit', this.limit.toString());
 
+    params.append('sortBy', this.sort);
+    params.append('sortDirection', this.direction.toString());
     return params;
   }
 
@@ -481,45 +525,47 @@ export class ResultsComponent implements OnInit {
   }
 
   remove(item: SearchModel): void {
-    console.log(item)
     if(item.type === 'make') {
-      let object = this.makes.find(m => m.name === item.label);
+      let object = this.makes.find(m => m.id === item.id);
       object!.selected = !object!.selected;
     }
     if(item.type === 'body') {
-      let object = this.types.find(t => t.type === item.label);
+      let object = this.types.find(t => t.id === item.id);
       object!.selected = !object!.selected;
     }
     if(item.type === 'fuel') {
-      let object = this.fuels.find(f => f.type === item.label);
+      let object = this.fuels.find(f => f.id === item.id);
       object!.selected = !object!.selected;
     }
 
     if(item.type === 'color') {
-      let object = this.colors.find(c => c.name === item.label);
+      let object = this.colors.find(c => c.id === item.id);
       object!.selected = !object!.selected;
     }
 
     if(item.type === 'drivetrain') {
-      let object = this.drivetrains.find(d => d.name === item.label);
+      let object = this.drivetrains.find(d => d.id === item.id);
       object!.selected = !object!.selected;
     }
 
     if(item.type === 'transmission') {
-      let object = this.transmissions.find(t => t.type === item.label);
+      let object = this.transmissions.find(t => t.id === item.id);
       object!.selected = !object!.selected;
     }
 
     if(item.type === 'condition') {
-      let object = this.conditions.find(c => c.name === item.label);
+      let object = this.conditions.find(c => c.id === item.id);
       object!.selected = !object!.selected;
+    }
+
+    if(item.type === 'mileage') {
+      this.mileage = this.defaultMileage;
     }
 
     this.fillChiplist();
   }
 
   fillChiplist() {
-
     this.chips = [];
 
     let makes = this.makes.filter(m => m.selected);
@@ -533,6 +579,7 @@ export class ResultsComponent implements OnInit {
     for (let make of makes) {
       this.chips.push(
         {
+          id: make.id,
           label: make.name,
           type: 'make',
           selected: true
@@ -543,6 +590,7 @@ export class ResultsComponent implements OnInit {
     for (let type of types) {
       this.chips.push(
         {
+          id: type.id,
           label: type.type,
           type: 'body',
           selected: true
@@ -553,6 +601,7 @@ export class ResultsComponent implements OnInit {
     for (let fuel of fuels) {
       this.chips.push(
         {
+          id: fuel.id,
           label: fuel.type,
           type: 'fuel',
           selected: true
@@ -563,6 +612,7 @@ export class ResultsComponent implements OnInit {
     for (let color of colors) {
       this.chips.push(
         {
+          id: color.id,
           label: color.name,
           type: 'color',
           selected: true
@@ -573,6 +623,7 @@ export class ResultsComponent implements OnInit {
     for (let drivetrain of drivetrains) {
       this.chips.push(
         {
+          id: drivetrain.id,
           label: drivetrain.name,
           type: 'drivetrain',
           selected: true
@@ -583,7 +634,8 @@ export class ResultsComponent implements OnInit {
     for (let transmission of transmissions) {
       this.chips.push(
         {
-          label: transmission.type,
+          id: transmission.id,
+          label: transmission.description,
           type: 'transmission',
           selected: true
         }
@@ -593,8 +645,51 @@ export class ResultsComponent implements OnInit {
     for (let condition of conditions) {
       this.chips.push(
         {
+          id: condition.id,
           label: condition.name,
           type: 'condition',
+          selected: true
+        }
+      );
+    }
+
+    if(this.mileage !== this.defaultMileage) {
+      this.chips.push(
+        {
+          id: this.mileage,
+          label: ` less than ${this.mileage} miles`,
+          type: 'mileage',
+          selected: true
+        }
+      );
+    }
+
+    if(this.startYear !== this.defaultYear && this.endYear !== this.defaultYear) {
+      this.chips.push(
+        {
+          id: 0,
+          label: this.startYear + ' - ' + this.endYear,
+          type: 'start_year',
+          selected: true
+        }
+      );
+    }
+    else if(this.startYear !== this.defaultYear) {
+      this.chips.push(
+        {
+          id: 0,
+          label: 'Min ' + this.startYear.toString(),
+          type: 'start_year',
+          selected: true
+        }
+      );
+    }
+    else if(this.endYear !== this.defaultYear) {
+      this.chips.push(
+        {
+          id: 0,
+          label: 'Max ' + this.endYear.toString(),
+          type: 'end_year',
           selected: true
         }
       );
@@ -604,5 +699,76 @@ export class ResultsComponent implements OnInit {
     const params = this.buildParams();
 
     this.search(`${url}?${params.toString()}`);
+  }
+
+  clearChips() {
+    this.chips = [];
+    this.makes.forEach(m => m.selected = false);
+    this.types.forEach(t => t.selected = false);
+    this.fuels.forEach(f => f.selected = false);
+    this.colors.forEach(c => c.selected = false);
+    this.drivetrains.forEach(d => d.selected = false);
+    this.transmissions.forEach(t => t.selected = false);
+    this.conditions.forEach(c => c.selected = false);
+    this.mileage = this.defaultMileage;
+    this.startYear = this.defaultYear;
+    this.endYear = this.defaultYear;
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
+  }
+
+  onSortChange() {
+
+    switch (this.selectedSort) {
+      case 0:
+        this.sort = 'id';
+        this.direction = Direction.ASC;
+        break;
+      case 1:
+        this.sort = 'price';
+        this.direction = Direction.ASC;
+        break;
+      case 2:
+        this.sort = 'price';
+        this.direction = Direction.DESC;
+        break;
+      case 3:
+        this.sort = 'year';
+        this.direction = Direction.ASC;
+        break;
+      case 4:
+        this.sort = 'year';
+        this.direction = Direction.DESC;
+        break;
+      case 5:
+        this.sort = 'mileage';
+        this.direction = Direction.ASC;
+        break;
+      case 6:
+        this.sort = 'mileage';
+        this.direction = Direction.DESC;
+        break;
+      case 7:
+        this.sort = 'created';
+        this.direction = Direction.ASC;
+        break;
+      default:
+        this.sort = 'id';
+        this.direction = Direction.ASC;
+        break;
+
+    }
+
+    const url = this.buildURL();
+    const params = this.buildParams();
+
+    this.search(`${url}?${params.toString()}`);
+  }
+
+  isBookmarked(id: number): boolean {
+    return this.bookmarks.some(b => b.autoId === id);
   }
 }

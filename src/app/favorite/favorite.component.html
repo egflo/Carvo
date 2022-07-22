@@ -1,0 +1,19 @@
+<div *ngIf="show">
+  <p class="title">Saved Listings</p>
+
+  <div class="">
+
+    <div
+      class="search-results"
+      infinite-scroll
+      [infiniteScrollDistance]="scrollDistance"
+      [infiniteScrollUpDistance]="scrollUpDistance"
+      [infiniteScrollThrottle]="throttle"
+      (scrolled)="onScroll()"
+    >
+      <div class="data "*ngFor="let bookmark of array">
+        <app-auto-card [auto]="bookmark.auto!" [bookmarked]="true"></app-auto-card>
+      </div>
+    </div>
+  </div>
+</div>

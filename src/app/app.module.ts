@@ -45,6 +45,7 @@ import {MatButtonModule} from "@angular/material/button";
 import {InfiniteScrollModule} from "ngx-infinite-scroll";
 import { WatchlistComponent } from './watchlist/watchlist.component';
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
+import { FavoriteComponent } from './favorite/favorite.component';
 
 @NgModule({
   declarations: [
@@ -56,6 +57,7 @@ import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
     AuthButtonComponent,
     UserProfileComponent,
     WatchlistComponent,
+    FavoriteComponent,
   ],
     imports: [
         BrowserModule,

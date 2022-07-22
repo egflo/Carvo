@@ -16,9 +16,10 @@ import {AuthService} from "../auth.service";
 })
 export class AutoCardComponent implements OnInit {
   @Input() auto!: Auto;
+  @Input() bookmarked: boolean = false;
+
   images$!: Observable<GalleryItem[]>;
   alertsEnabled: any;
-  bookmarkExists: Boolean = false;
   bookmarkId: number = 0;
 
   constructor(
@@ -34,23 +35,14 @@ export class AutoCardComponent implements OnInit {
     const galleryRef: GalleryRef = this.gallery.ref('gallery-' + this.auto.id);
     galleryRef.load(this.buildImageItems(this.auto));
 
+    console.log(this.bookmarked)
+
+
     if(this.auth.isAuthenticated()) {
-      this.getBookmark();
+      //this.getBookmark();
     }
   }
 
-  getBookmark(): void {
-    this.service.existBookmark(this.auto.id).subscribe(response => {
-      const keys = response.headers.keys();
-      if(response.status == 200) {
-        this.bookmarkExists = true;
-        this.bookmarkId = response.body!.id;
-      }
-      else {
-        this.bookmarkExists = false;
-      }
-    });
-  }
 
   buildImageItems(auto: Auto): GalleryItem[] {
     let items = []
@@ -122,19 +114,34 @@ export class AutoCardComponent implements OnInit {
     return formatter.format(value);
   }
 
+
+  getBookmark(): void {
+    this.service.existBookmark(this.auto.id).subscribe(response => {
+      const keys = response.headers.keys();
+      if(response.status == 200) {
+        this.bookmarked = true;
+        this.bookmarkId = response.body!.id;
+      }
+      else {
+        this.bookmarked = false;
+      }
+    });
+  }
+
   onBookmarkClick(id: number): void {
     console.log("onBookmarkClick" + id);
     if(this.auth.isAuthenticated()) {
       const request = {
         autoId: id,
-        userId: 1
+        userId: 1,
       } as BookmarkRequestModel;
 
       this.service.updateBookmark(request).subscribe(response => {
-        if (response.status == 200) {
-          this.getBookmark();
+        const HTTP_CREATED = 201;
+        if (response.status == HTTP_CREATED) {
+          this.bookmarked = true;
         } else {
-          this.bookmarkExists = false;
+          this.bookmarked = false;
         }
       });
     }

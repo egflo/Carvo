@@ -22,6 +22,16 @@
             </mat-chip>
           </mat-chip-list>
         </div>
+
+        <div class="results-text">
+          <div *ngIf="(results$ | async) as results; else loadingText">
+            <p>{{this.results.totalElements}} Results | <span (click)="clearChips()" class="filter-link"> Clear Filters</span></p>
+          </div>
+          <ng-template #loadingText>
+            <p>Processing Query</p>
+          </ng-template>
+        </div>
+
       </mat-card-content>
     </mat-card>
 
@@ -29,6 +39,7 @@
       <mat-card-header>
       </mat-card-header>
       <mat-card-content>
+
         <cdk-accordion class="accordion">
           <cdk-accordion-item
             #accordionItemLocation="cdkAccordionItem"
@@ -103,12 +114,16 @@
               [attr.aria-labelledby]="'accordion-header-year'">
               <div class = "year-container">
                 <select  id="start-year" class="form-select" aria-label="start-year" (change)="onChangeSelect($event)">
-                  <option selected>Select Start Year</option>
-                  <option *ngFor="let year of startYears" [value]="year" [selected]="year == startYear">{{ year }}</option>
+                  <option *ngFor="let year of startYears"
+                          [value]="year"
+                          [selected]="year == defaultYear"
+                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
                 </select>
                 <select id="end-year" class="form-select" aria-label="end-year" (change)="onChangeSelect($event)">
-                  <option selected>Select End Year</option>
-                  <option *ngFor="let year of endYears" [value]="year" [selected]="year == endYear">{{ year }}</option>
+                  <option *ngFor="let year of endYears"
+                          [value]="year"
+                          [selected]="year == defaultYear"
+                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
                 </select>
               </div>
             </div>
@@ -248,7 +263,7 @@
               [attr.aria-labelledby]="'accordion-header-body-miles'">
               <div class = "mileage-container">
                 <label for="mileage" class="form-label">{{mileage}} miles or fewer</label>
-                <ngx-slider [(value)]="mileage" [options]="optionsMiles" id="mileage" (userChange)="onChangeMileage($event)"></ngx-slider>
+                <ngx-slider [(value)]="mileage" [options]="optionsMiles" id="mileage" (userChangeEnd)="onChangeMileage($event)"></ngx-slider>
               </div>
             </div>
           </cdk-accordion-item>
@@ -280,7 +295,7 @@
               <div class = "color-container">
                 <label *ngFor="let color of colors"  class="container">
                   {{color.name.charAt(0).toUpperCase() + color.name.slice(1).toLowerCase()}}
-                  <input type="checkbox" [checked]="color.selected" value="{{color.id}}" name="color" (change)="onChangeCheck($event)">
+                  <input type="checkbox" value="{{color.id}}" name="color" (change)="onChangeCheck($event)" [checked]="color.selected">
                   <span class="checkmark" [ngStyle]="{'background-color': color.name.toLowerCase()}"></span>
                 </label>
               </div>
@@ -314,7 +329,7 @@
               <div class = "body-container">
                 <div *ngFor="let drivetrain of drivetrains" class="form-check">
                   <input class="form-check-input" type="checkbox" name="drivetrain" (change)="onChangeCheck($event)"
-                         value="{{drivetrain.id}}" id="drive-type-{{drivetrain.id}}">
+                         value="{{drivetrain.id}}" id="drive-type-{{drivetrain.id}}" [checked]="drivetrain.selected">
                   <label class="form-check-label" for="drive-type-{{drivetrain.id}}">
                     {{drivetrain.name}}
                   </label>
@@ -350,7 +365,7 @@
               <div class = "body-container">
                 <div *ngFor="let transmission of transmissions" class="form-check">
                   <input class="form-check-input" type="checkbox" name="transmission" (change)="onChangeCheck($event)"
-                         value="{{transmission.type}}" id="transmission-type-{{transmission.id}}">
+                         value="{{transmission.type}}" id="transmission-type-{{transmission.id}}" [checked]="transmission.selected">
                   <label class="form-check-label" for="transmission-type-{{transmission.id}}">
                     {{transmission.description}}
                   </label>
@@ -416,7 +431,7 @@
               <div class = "body-container">
                 <div *ngFor="let item of conditions" class="form-check">
                   <input class="form-check-input" type="checkbox" name="condition" (change)="onChangeCheck($event)"
-                         value="{{item.value}}" id="condition-type-{{item.name}}">
+                         value="{{item.value}}" id="condition-type-{{item.name}}" [checked]="item.selected">
                   <label class="form-check-label" for="condition-type-{{item.name}}">
                     {{item.name}}
                   </label>
@@ -430,20 +445,35 @@
   </div>
 
 
-
   <div class="results-container">
-    <div class="data-container">
       <div *ngIf="(results$ | async) as results; else loading">
-        <div *ngFor="let auto of results.content">
-          <app-auto-card [auto]="auto"></app-auto-card>
+
+        <div class="sort-field">
+          <mat-form-field appearance="fill">
+            <mat-label>Select an option</mat-label>
+            <mat-select disableRipple matNativeControl [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
+              <mat-option *ngFor="let option of sortable" [value]="option.id">
+                {{option.name}}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+
+          <div class="spacer"></div>
+
+          <div class="pagination">
+            <mat-paginator [length]="results.totalElements"
+                           [pageSize]="results.size"
+                           [pageSizeOptions]="pageSizeOptions"
+                           (page)="onPageChange($event)"
+                           aria-label="Select page">
+            </mat-paginator>
+          </div>
         </div>
-        <div class="pagination">
-          <mat-paginator [length]="results.totalElements"
-                         [pageSize]="results.size"
-                         [pageSizeOptions]="pageSizeOptions"
-                         (page)="onPageChange($event)"
-                         aria-label="Select page">
-          </mat-paginator>
+
+        <div class="data-container">
+          <div *ngFor="let auto of results.content">
+            <app-auto-card [auto]="auto" [bookmarked]="isBookmarked(auto.id)"></app-auto-card>
+          </div>
         </div>
       </div>
       <ng-template #loading>
@@ -452,7 +482,6 @@
           [diameter]="100"
           [strokeWidth]="4"></mat-spinner>
       </ng-template>
-    </div>
   </div>
 </div>
 

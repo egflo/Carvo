@@ -142,7 +142,7 @@
               <div class="description-container">
                 <div class="description-item">
                   <p class="description-title">Body</p>
-                  <p class="description-text">{{auto.body.bodyType}}</p>
+                  <p class="description-text">{{auto.body.bodyType.type}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Color</p>
@@ -187,7 +187,7 @@
                   </div>
                   <div class="description-item">
                     <p class="description-title">Franchise Dealer</p>
-                    <p class="description-text">{{auto.dealer?.franchiseDealer}}</p>
+                    <p class="description-text">{{formatBoolean(auto.dealer?.franchiseDealer)}}</p>
                   </div>
                   <div [hidden]="!auto.dealer?.franchiseDealer" class="description-item">
                     <p class="description-title">Franchise Make</p>
@@ -215,19 +215,19 @@
                 </div>
                 <div class="description-item">
                   <p class="description-title">Frame Damage</p>
-                  <p class="description-text">{{auto.report.frameDamage}}</p>
+                  <p class="description-text">{{formatBoolean(auto.report.frameDamage)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Accident(s)</p>
-                  <p class="description-text">{{auto.report.hasAccidents}}</p>
+                  <p class="description-text">{{formatBoolean(auto.report.hasAccidents)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Theft Title</p>
-                  <p class="description-text">{{auto.report.theftTitle}}</p>
+                  <p class="description-text">{{formatBoolean(auto.report.theftTitle)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Salvage</p>
-                  <p class="description-text">{{auto.report.salvage}}</p>
+                  <p class="description-text">{{formatBoolean(auto.report.salvage)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Owner(s)</p>
@@ -239,23 +239,23 @@
               <div class="description-container">
                 <div class="description-item">
                   <p class="description-title">Was Fleet</p>
-                  <p class="description-text">{{auto.fleet}}</p>
+                  <p class="description-text">{{formatBoolean(auto.fleet)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Was Cab</p>
-                  <p class="description-text">{{auto.isCab}}</p>
+                  <p class="description-text">{{formatBoolean(auto.isCab)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Is New</p>
-                  <p class="description-text">{{auto.isNew}}</p>
+                  <p class="description-text">{{formatBoolean(auto.isNew)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Is Certified Pre-Owned (CPO)</p>
-                  <p class="description-text">{{auto.isCpo}}</p>
+                  <p class="description-text">{{formatBoolean(auto.isCpo)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Is OEM CPO</p>
-                  <p class="description-text">{{auto.isOemcpo}}</p>
+                  <p class="description-text">{{formatBoolean(auto.isOemcpo)}}</p>
                 </div>
                 <div class="description-item">
                   <p class="description-title">Listing ID</p>

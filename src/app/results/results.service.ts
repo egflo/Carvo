@@ -11,6 +11,7 @@ import {Color} from "../api/color";
 import {Drivetrain} from "../api/drivetrain";
 import {Transmission} from "../api/transmission";
 import {AuthService} from "../auth.service";
+import {Bookmark} from "../api/bookmark";
 
 
 
@@ -85,4 +86,19 @@ export class ResultsService {
     );
   }
 
+  getBookmarks(): Observable<[Bookmark]> {
+    const httpOptionsBookmark = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: 'Bearer ' + this.auth.getAccessToken()
+      })
+    };
+
+    let url = `http://localhost:8080/bookmark/watchlist/all`;
+    return this.http.get<[Bookmark]>(url, httpOptionsBookmark).pipe(
+      catchError(this.handleError<[Bookmark]>(`getBookmarks`))
+    );
+  }
 }

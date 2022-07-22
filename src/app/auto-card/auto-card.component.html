@@ -4,7 +4,7 @@
 
     <button class="favorite-button"
             mat-icon-button
-            [color]="bookmarkExists ? 'warn' : 'accent'"
+            [color]="bookmarked ? 'warn' : 'accent'"
             aria-label="Add to Watchlist"
             (click)="onBookmarkClick(auto.id)">
       <mat-icon>favorite</mat-icon>

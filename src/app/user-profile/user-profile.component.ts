@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '@auth0/auth0-angular';
+import {AuthService} from "../auth.service";
+import {HandleError} from "../http-error-handler.service";
+import {Observable, of} from "rxjs";
+import {User} from "../api/user";
+
 
 @Component({
   selector: 'app-user-profile',
@@ -8,14 +12,28 @@ import { AuthService } from '@auth0/auth0-angular';
 })
 export class UserProfileComponent implements OnInit {
   profileJson: string = "";
+  user$: Observable<User> | undefined;
 
 
-  constructor(public auth: AuthService) {}
+
+  constructor(
+    private auth: AuthService,
+  ) {}
 
   ngOnInit(): void {
-    this.auth.user$.subscribe(
-      (profile) => (this.profileJson = JSON.stringify(profile, null, 2)),
-    );
+
+    if(this.auth.isAuthenticated()) {
+
+
+      this.user$ = this.auth.getUser();
+
+
+    }
+    else {
+      this.auth.login();
+    }
   }
+
+
 
 }

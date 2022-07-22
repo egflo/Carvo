@@ -190,7 +190,6 @@ export class AutoComponent implements OnInit {
   }
 
   onBookmarkClick(id: number) {
-
     if(!this.auth.isAuthenticated()) {
       this.auth.login();
     }
@@ -225,8 +224,19 @@ export class AutoComponent implements OnInit {
         });
       }
     }
+  }
 
+  formatBoolean(value: boolean | undefined): string {
+    if(value == undefined) {
+      return "N/A";
+    }
 
+    if(value) {
+      return "Yes";
+    }
+    else {
+      return "No";
+    }
   }
 
   formatCurrency(value: number) : string {
@@ -241,7 +251,7 @@ export class AutoComponent implements OnInit {
     return formatter.format(value);
   }
 
-  formatRating(rating: number | undefined) {
+  formatRating(rating: number | undefined): any {
 
     if(rating == undefined) {
       return "";
