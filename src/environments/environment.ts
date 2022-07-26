@@ -3,7 +3,12 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  issuer: 'https://dev-ncqu2zod.us.auth0.com/',
+  clientId: 'EHic8gWWdFvWRvmdnW6wlslUrG86Dp33',
+  audience: 'https://carvo/api',
+  googleAPIKey: 'AIzaSyBWfq77pnFwWGahK9nzde6cTxsRfaOnK0M',
+  apiUrl: 'http://localhost:8080',
 };
 
 /*
@@ -14,3 +19,4 @@ export const environment = {
  * on performance if an error is thrown.
  */
 // import 'zone.js/plugins/zone-error';  // Included with Angular CLI.
+

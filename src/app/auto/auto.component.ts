@@ -38,11 +38,11 @@ export class AutoComponent implements OnInit {
   bookmarkId: number = 0;
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private autoService: AutoService,
-    private auth: AuthService,
+    public route: ActivatedRoute,
+    public router: Router,
+    public location: Location,
+    public autoService: AutoService,
+    public auth: AuthService,
   ) {}
 
   ngOnInit(): void {
@@ -53,6 +53,7 @@ export class AutoComponent implements OnInit {
       const keys = response.headers.keys();
       if(response.status == 200) {
         this.autoObs = of(response.body!);
+        console.log(response.body);
         if(response.body?.dealer) {
           let dealer = response.body.dealer;
           this.center = {lat: dealer.latitude, lng: dealer.longitude};

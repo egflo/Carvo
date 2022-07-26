@@ -11,12 +11,24 @@
 
 }
 
-.data {
-}
 
 .title {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
+}
 
+
+/* Responsive Styles */
+@media screen and (max-width: 767px) {
+  .search-results {
+    width: 100vw;
+  }
+
+}
+
+@media screen and (max-width: 575px) {
+  .search-results {
+    width: 100vw;
+  }
 }

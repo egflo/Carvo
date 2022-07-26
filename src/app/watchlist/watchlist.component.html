@@ -14,6 +14,15 @@
     <div class="data "*ngFor="let bookmark of array">
       <app-auto-card [auto]="bookmark.auto!" [bookmarked]="true" ></app-auto-card>
     </div>
+    <div *ngIf="loading" class="loading">
+      <mat-progress-spinner
+        class="mat-progress-spinner"
+        [diameter]="100"
+        [strokeWidth]="4"
+        mode="indeterminate"
+        color="primary">
+      </mat-progress-spinner>
+    </div>
   </div>
 </div>
 

@@ -46,6 +46,12 @@ import {InfiniteScrollModule} from "ngx-infinite-scroll";
 import { WatchlistComponent } from './watchlist/watchlist.component';
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import { FavoriteComponent } from './favorite/favorite.component';
+import {ViewStateService} from "./view-state.service";
+import { ResultsMobileComponent } from './results-mobile/results-mobile.component';
+import {MatExpansionModule} from "@angular/material/expansion";
+import {MatRadioModule} from "@angular/material/radio";
+import { AutoMobileComponent } from './auto/auto-mobile/auto-mobile.component';
+import { AutoDesktopComponent } from './auto/auto-desktop/auto-desktop.component';
 
 @NgModule({
   declarations: [
@@ -58,49 +64,55 @@ import { FavoriteComponent } from './favorite/favorite.component';
     UserProfileComponent,
     WatchlistComponent,
     FavoriteComponent,
+    ResultsMobileComponent,
+    AutoMobileComponent,
+    AutoDesktopComponent,
   ],
-    imports: [
-        BrowserModule,
-        HttpClientModule,
-        AppRoutingModule,
-        BrowserAnimationsModule,
-        MatChipsModule,
-        MatIconModule,
-        MatCardModule,
-        MatTabsModule,
-        GoogleMapsModule,
-        StarRatingModule.forRoot(),
-        MatFormFieldModule,
-        MatSelectModule,
-        ReactiveFormsModule,
-        MatButtonToggleModule,
-        MatPaginatorModule,
-        MatSidenavModule,
-        MatToolbarModule,
-        MatListModule,
-        CdkAccordionModule,
-        GalleryModule,
-        FormsModule,
-        NgxSliderModule,
-        MatInputModule,
-        InfiniteScrollModule ,
-        // Import the module into the application, with configuration
-        AuthModule.forRoot({
-            domain: 'dev-ncqu2zod.us.auth0.com',
-            clientId: 'EHic8gWWdFvWRvmdnW6wlslUrG86Dp33',
-            httpInterceptor: {
-                allowedList: ['https://dev-ncqu2zod.us.auth0.com/api/v2/'],
-            },
-        }),
-        OAuthModule.forRoot(),
-        MatButtonModule,
-        MatProgressSpinnerModule,
-    ],
+  imports: [
+    BrowserModule,
+    HttpClientModule,
+    AppRoutingModule,
+    BrowserAnimationsModule,
+    MatChipsModule,
+    MatIconModule,
+    MatCardModule,
+    MatTabsModule,
+    GoogleMapsModule,
+    StarRatingModule.forRoot(),
+    MatFormFieldModule,
+    MatSelectModule,
+    ReactiveFormsModule,
+    MatButtonToggleModule,
+    MatPaginatorModule,
+    MatSidenavModule,
+    MatToolbarModule,
+    MatListModule,
+    CdkAccordionModule,
+    GalleryModule,
+    FormsModule,
+    NgxSliderModule,
+    MatInputModule,
+    InfiniteScrollModule,
+    // Import the module into the application, with configuration
+    AuthModule.forRoot({
+      domain: 'dev-ncqu2zod.us.auth0.com',
+      clientId: 'EHic8gWWdFvWRvmdnW6wlslUrG86Dp33',
+      httpInterceptor: {
+        allowedList: ['https://dev-ncqu2zod.us.auth0.com/api/v2/'],
+      },
+    }),
+    OAuthModule.forRoot(),
+    MatButtonModule,
+    MatProgressSpinnerModule,
+    MatExpansionModule,
+    MatRadioModule,
+  ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
     HttpErrorHandler,
     MessageService,
     AuthService,
+    ViewStateService,
   ],
   bootstrap: [AppComponent]
 })

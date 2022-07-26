@@ -24,6 +24,7 @@ export class WatchlistComponent implements OnInit {
 
   page: number = 0;
   last: Boolean = false;
+  loading: Boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -39,13 +40,14 @@ export class WatchlistComponent implements OnInit {
   }
 
   getBookmark() : void {
-    console.log("getBookmark");
+    this.loading = true;
     this.service.getWatchlist(this.page).subscribe(
       data => {
         this.page = data.pageable.pageNumber;
         this.last = data.last;
         //Add more to list
         this.array = this.array.concat(data.content);
+        this.loading = false;
         this.show = true;
       }
     )

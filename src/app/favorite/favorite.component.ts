@@ -18,6 +18,7 @@ export class FavoriteComponent implements OnInit {
   scrollDistance = 2;
   scrollUpDistance = 1.5;
   direction = "";
+  loading: Boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -44,13 +45,14 @@ export class FavoriteComponent implements OnInit {
   }
 
   getBookmark() : void {
+    this.loading = true;
     this.service.getWatchlist(this.page).subscribe(
       data => {
         this.page = data.pageable.pageNumber;
         this.last = data.last;
         //Add more to list
-        console.log(data.content);
         this.array = this.array.concat(data.content);
+        this.loading = false;
       }
     )
   }
