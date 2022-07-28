@@ -137,9 +137,13 @@ export class ResultsComponent implements OnInit {
     //  })
     //);
 
-    this.resultsService.getBookmarks().subscribe(bookmarks => {
-      this.bookmarks = bookmarks;
-    });
+
+    if (this.auth.isAuthenticated()) {
+      this.resultsService.getBookmarks().subscribe(bookmarks => {
+        this.bookmarks = bookmarks;
+      });
+    }
+
 
     this.route.queryParams.subscribe(params => {
       this.page = params['page'] || 1;
@@ -275,6 +279,8 @@ export class ResultsComponent implements OnInit {
     //if id is start year
     if(selectElement.id.includes("start-year")) {
       this.startYear = value;
+
+
     }
     //if id is end year
     if(selectElement.id.includes("end-year")) {
@@ -769,6 +775,7 @@ export class ResultsComponent implements OnInit {
   }
 
   isBookmarked(id: number): boolean {
+
     return this.bookmarks.some(b => b.autoId === id);
   }
 }

@@ -12,22 +12,35 @@
 }
 
 
-.title {
+.search-title {
   font-size: 1.5rem;
   font-weight: bold;
   margin-bottom: 0.5rem;
 }
 
 
-/* Responsive Styles */
 @media screen and (max-width: 767px) {
+
+  .search-title {
+    font-size: 1.2rem;
+    margin: 1rem;
+  }
+
   .search-results {
     width: 100vw;
   }
 
 }
 
+/* Responsive Styles */
+
+
 @media screen and (max-width: 575px) {
+  .search-title {
+    font-size: 1.2rem;
+    margin: 1rem;
+  }
+
   .search-results {
     width: 100vw;
   }

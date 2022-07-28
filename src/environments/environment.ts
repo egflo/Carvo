@@ -4,7 +4,11 @@
 
 export const environment = {
   production: false,
-
+  issuer: 'https://dev-ncqu2zod.us.auth0.com/',
+  clientId: 'EHic8gWWdFvWRvmdnW6wlslUrG86Dp33',
+  audience: 'https://carvo/api',
+  googleAPIKey: 'AIzaSyBWfq77pnFwWGahK9nzde6cTxsRfaOnK0M',
+  apiUrl: 'http://localhost:8080',
 };
 
 /*

@@ -34,10 +34,6 @@ export class AutoCardComponent implements OnInit {
   ngOnInit(): void {
     const galleryRef: GalleryRef = this.gallery.ref('gallery-' + this.auto.id);
     galleryRef.load(this.buildImageItems(this.auto));
-
-    console.log(this.bookmarked)
-
-
     if(this.auth.isAuthenticated()) {
       //this.getBookmark();
     }

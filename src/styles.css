@@ -2104,3 +2104,7 @@ th.mat-header-cell, td.mat-cell, td.mat-footer-cell {
 
 
 
+.md-sidenav-content {
+  display: flex !important;
+  flex-direction: column !important;
+}

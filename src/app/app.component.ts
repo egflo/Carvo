@@ -170,4 +170,8 @@ export class AppComponent {
   onUserClick() {
     this.router.navigate(["/user"]);
   }
+
+  onHomeClick() {
+    this.router.navigate(["/"]);
+  }
 }

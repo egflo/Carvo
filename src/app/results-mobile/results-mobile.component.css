@@ -1,103 +1,14 @@
-.mat-expansion-panel {
-  width: 100vw;
-}
-
-
-.container-main {
-  display: flex;
-  flex-direction: row;
-  width: 100vw;
-  position: relative;
-}
 
 
 .filter-container {
-
 }
 
-
-
-.results-container {
-
-}
 
 .mat-card {
   width: 400px;
   margin: 0 auto;
   display: block;
   padding: 0;
-}
-
-
-
-/* Customize the label (the container) */
-.container {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-
-  position: relative;
-  padding-left: 35px;
-  margin-bottom: 12px;
-  cursor: pointer;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-/* Hide the browser's default radio button */
-.container input {
-  position: absolute;
-  opacity: 0;
-  cursor: pointer;
-  height: 0;
-  width: 0;
-}
-
-/* Create a custom radio button */
-.checkmark {
-  position: absolute;
-  top: 0;
-  left: 0;
-  height: 25px;
-  width: 25px;
-  background-color: #eee;
-  border-radius: 50%;
-}
-
-/* On mouse-over, add a grey background color */
-.container:hover input ~ .checkmark {
-  background-color: #ccc;
-}
-
-/* When the radio button is checked, add a blue background */
-.container input:checked ~ .checkmark {
-  background-color: #2196F3;
-}
-
-/* Create the indicator (the dot/circle - hidden when not checked) */
-.checkmark:after {
-  content: "";
-  position: absolute;
-  display: none;
-}
-
-/* Show the indicator (dot/circle) when checked */
-.container input:checked ~ .checkmark:after {
-  display: block;
-}
-
-/* Style the indicator (dot/circle) */
-.container .checkmark:after {
-  top: 9px;
-  left: 9px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: white;
 }
 
 
@@ -140,32 +51,33 @@
   height: 5rem;
 }
 
-.example-container {
-  width: 100vw;
-  min-height: 75vh;
-  overflow: hidden;
-}
 
-.example-sidenav-content {
+
+.example-content {
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: white;
+  flex-wrap: wrap;
 }
 
 .example-sidenav {
   display: flex;
   align-items: center;
   justify-content: center;
+  width: 100%;
+  height: 100%;
 
 }
 
-
-.search-results {
+.mat-accordion {
+  width: 100%;
+  height: 100%;
 }
 
 .mobile-container {
   width: 100vw;
+  height: 100%;
 }
 
 .example-radio-group {
@@ -179,27 +91,49 @@
   margin: 5px;
 }
 
-.mat-radio-button {
-}
-
-.sort-container {
-  width: 100vw;
-  padding: 1rem;
-}
-
 
 .sticky-top {
   background-color: white;
 }
-
 
 .filter-sort {
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
+  height: 100%;
+
 }
 
 .spacer {
   flex: 1;
 }
+
+.example-container {
+
+  min-height: 100vh;
+
+}
+
+.loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 8rem;
+  width: 100vw;
+}
+
+
+.filter-drawer {
+  border: 1px solid red;
+  width: 100%;
+}
+
+.sort-drawer {
+  padding: 1rem;
+  border: 1px solid red;
+  width: 100%;
+
+}
+

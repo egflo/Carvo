@@ -1,4 +1,4 @@
-import {Component, HostListener, OnInit} from '@angular/core';
+import {Component, HostListener, OnInit, ViewChild} from '@angular/core';
 import {Observable, Subject} from "rxjs";
 import {Page} from "../api/page";
 import {MakeModel} from "../model/make-model";
@@ -11,13 +11,14 @@ import {ChangeContext, LabelType, Options, PointerType} from "@angular-slider/ng
 import {SearchModel} from "../model/search-model";
 import {Direction} from "../model/direction";
 import {Bookmark} from "../api/bookmark";
-import {ActivatedRoute, Router} from "@angular/router";
+import {ActivatedRoute, Router, Scroll} from "@angular/router";
 import {Location} from "@angular/common";
 import {ResultsService} from "../results/results.service";
 import {FormBuilder} from "@angular/forms";
 import {AuthService} from "../auth.service";
 import {PageEvent} from "@angular/material/paginator";
 import {Auto} from "../api/auto";
+import {MatDrawerContainer, MatSidenavContainer} from "@angular/material/sidenav";
 
 @Component({
   selector: 'app-results-mobile',
@@ -25,6 +26,9 @@ import {Auto} from "../api/auto";
   styleUrls: ['./results-mobile.component.css']
 })
 export class ResultsMobileComponent implements OnInit {
+
+  bottomScroll: boolean = false;
+
   query!: String;
 
   results$!: Observable<Page>
@@ -39,7 +43,7 @@ export class ResultsMobileComponent implements OnInit {
   array = [] as Auto[];
   show: Boolean = true;
   throttle = 150;
-  scrollDistance = 2;
+  scrollDistance = 1;
   scrollUpDistance = 1.5;
   loading: Boolean = true;
 
@@ -65,14 +69,12 @@ export class ResultsMobileComponent implements OnInit {
   postcode: number = 0;
   distance: number = 0;
 
-
   defaultMileage: number = 250000;
   mileage: number = this.defaultMileage;
   optionsMiles: Options = {
     floor: 0,
     ceil: 400000,
   };
-
 
   value: number = 25000;
   highValue: number = 550000;
@@ -134,6 +136,7 @@ export class ResultsMobileComponent implements OnInit {
     this.limit = Number(queryParams.get('limit')) || 10;
 
 
+
     let params = this.buildParams()
     this.resultsService.getResults(this.query + "?" + params.toString()).subscribe(results => {
       this.array = results.content;
@@ -154,6 +157,7 @@ export class ResultsMobileComponent implements OnInit {
     });
 
 
+
     this.buildYears();
 
     this.buildMakes();
@@ -168,6 +172,7 @@ export class ResultsMobileComponent implements OnInit {
 
     this.buildTransmissions();
   }
+
 
   search(term: String): void {
     this.loading = true;
@@ -775,30 +780,31 @@ export class ResultsMobileComponent implements OnInit {
     this.search(`${url}?${params.toString()}`);
   }
 
-  @HostListener('scroll', ['$event'])
-  onScroll() {
+  @HostListener('window:scroll', ['$event'])
+  onScroll(event : any) : void {
 
-    //if loading is true, don't do anything
-    if(this.loading) {
-      return;
-    }
+    const scrollY = window.scrollY;
+    const scrollHeight = document.body.scrollHeight;
+    const clientHeight = document.body.clientHeight;
+    const scrollPosition = scrollY + clientHeight;
 
-    console.log("scroll");
     if (this.last) {
       return;
     }
-    this.page++;
 
-    return;
-    let params = this.buildParams()
-    this.resultsService.getResults(this.query + "?" + params.toString()).subscribe(results => {
-      this.array.concat(results.content);
-      this.numberOfElements = results.totalElements;
-      this.last = results.last;
-      this.loading = false;
-    } , error => {
-      console.log(error);
-    });
+
+    console.log(this.loading)
+    if(scrollPosition >= scrollHeight - 100 && !this.loading && !this.last) {
+      console.log('scrolled to bottom');
+      this.page = this.page + 1;
+      this.loading = true;
+
+
+      const url = this.buildURL();
+      const params = this.buildParams(this.page);
+      const full_path = `${url}?${params.toString()}`;
+      console.log(full_path);
+
+    }
   }
-
 }

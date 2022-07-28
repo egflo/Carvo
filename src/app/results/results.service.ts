@@ -38,9 +38,7 @@ export class ResultsService {
 
   //page=${page}&limit=${limit}
   getResults(query:String): Observable<Page> {
-
     let url = `http://localhost:8080/auto/search/${encodeURI(query.toString())}`;
-    console.log(url);
 
     return this.http.get<Page>(url,this.httpOptions).pipe(
       catchError(this.handleError<Page>(`getResults`))

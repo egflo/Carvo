@@ -1,262 +1,254 @@
-<div class="mobile-container">
 
-  <div class="sticky-top">
-    <div class="filter-chips-content">
-      <mat-chip-list #chipList aria-label="Search Selection">
-        <mat-chip
-          selected [color]=""
-          *ngFor="let item of chips"
-          (removed)="remove(item)">
-          {{item.label}}
-          <button matChipRemove>
-            <mat-icon>cancel</mat-icon>
-          </button>
-        </mat-chip>
-      </mat-chip-list>
+  <div
+    class="mobile-container"
+    #mobileContainer
+  >
+
+    <div class="sticky-top">
+      <div class="filter-chips-content">
+        <mat-chip-list #chipList aria-label="Search Selection">
+          <mat-chip
+            selected [color]=""
+            *ngFor="let item of chips"
+            (removed)="remove(item)">
+            {{item.label}}
+            <button matChipRemove>
+              <mat-icon>cancel</mat-icon>
+            </button>
+          </mat-chip>
+        </mat-chip-list>
+      </div>
+
+      <div class="filter-sort">
+        <button type="button" mat-button (click)="drawer.toggle()">
+          <mat-icon>filter_list</mat-icon>
+          <span class="filter-button-text">Filter</span>
+        </button>
+
+        <div class="spacer"></div>
+
+        <button type="button" mat-button (click)="drawerRight.toggle()">
+          <mat-icon>sort</mat-icon>
+          <span class="filter-button-text">Sort</span>
+        </button>
+      </div>
     </div>
 
+    <mat-drawer-container class="example-container">
 
-    <div class="filter-sort">
-      <button type="button" mat-button (click)="drawer.toggle()">
-        <mat-icon>filter_list</mat-icon>
-        <span class="filter-button-text">Filter</span>
-      </button>
+      <mat-drawer #drawer class="example-sidenav" mode="side">
 
-      <div class="spacer"></div>
-
-      <button type="button" mat-button (click)="drawerRight.toggle()">
-        <mat-icon>sort</mat-icon>
-        <span class="filter-button-text">Sort</span>
-      </button>
-
-    </div>
-
-
-  </div>
-
-
-
-  <mat-drawer-container class="example-container" autosize>
-    <mat-drawer #drawer class="example-sidenav" mode="side">
-      <mat-accordion class="example-headers-align" multi>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Location
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <div class="form-row align-items-center">
-              <div class="col-auto my-1">
-                <div class="mb-3">
-                  <label for="postcode" class="form-label">Postcode</label>
-                  <input type="text" class="form-control" id="postcode" placeholder="90805" (change)="onPostcodeChange($event)">
+        <div class="filter-drawer">
+          <mat-accordion class="example-headers-align" multi>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Location
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <div class="form-row align-items-center">
+                  <div class="col-auto my-1">
+                    <div class="mb-3">
+                      <label for="postcode" class="form-label">Postcode</label>
+                      <input type="text" class="form-control" id="postcode" placeholder="90805" (change)="onPostcodeChange($event)">
+                    </div>
+                  </div>
+                  <div class="col-auto my-1">
+                    <label for="distance" class="form-label">Distance</label>
+                    <select class="form-select"  id="distance" aria-label="Default select example" (change)="onDistanceChange($event)">
+                      <option value="0"selected>Nationwide</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="75">75</option>
+                    </select>
+                  </div>
                 </div>
               </div>
-              <div class="col-auto my-1">
-                <label for="distance" class="form-label">Distance</label>
-                <select class="form-select"  id="distance" aria-label="Default select example" (change)="onDistanceChange($event)">
-                  <option value="0"selected>Nationwide</option>
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="75">75</option>
+            </mat-expansion-panel>
+
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Year
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <select  id="start-year" class="form-select" aria-label="start-year" (change)="onChangeSelect($event)">
+                  <option *ngFor="let year of startYears"
+                          [value]="year"
+                          [selected]="year == defaultYear"
+                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
+                </select>
+                <select id="end-year" class="form-select" aria-label="end-year" (change)="onChangeSelect($event)">
+                  <option *ngFor="let year of endYears"
+                          [value]="year"
+                          [selected]="year == defaultYear"
+                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
                 </select>
               </div>
-            </div>
-          </div>
-        </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Year
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <select  id="start-year" class="form-select" aria-label="start-year" (change)="onChangeSelect($event)">
-              <option *ngFor="let year of startYears"
-                      [value]="year"
-                      [selected]="year == defaultYear"
-                      [defaultSelected]="year === defaultYear" >{{ year }}</option>
-            </select>
-            <select id="end-year" class="form-select" aria-label="end-year" (change)="onChangeSelect($event)">
-              <option *ngFor="let year of endYears"
-                      [value]="year"
-                      [selected]="year == defaultYear"
-                      [defaultSelected]="year === defaultYear" >{{ year }}</option>
-            </select>
-          </div>
+            </mat-expansion-panel>
 
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Make
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <div *ngFor="let make of makes" class="form-check">
+                  <input class="form-check-input" name="make" type="checkbox" value="{{make.id}}"
+                         id="make-{{make.id}}" (change)="onChangeCheck($event)"  [checked]="make.selected">
+                  <label class="form-check-label" for="make-{{make.id}}">
+                    {{make.name}}
+                  </label>
+                </div>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Make
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <div *ngFor="let make of makes" class="form-check">
-              <input class="form-check-input" name="make" type="checkbox" value="{{make.id}}"
-                     id="make-{{make.id}}" (change)="onChangeCheck($event)"  [checked]="make.selected">
-              <label class="form-check-label" for="make-{{make.id}}">
-                {{make.name}}
-              </label>
-            </div>
-          </div>
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Body Type
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <div *ngFor="let body of types" class="form-check">
+                  <input class="form-check-input" type="checkbox"  name="body" (change)="onChangeCheck($event)"
+                         value="{{body.id}}" id="body-type-{{body.id}}" [checked]="body.selected">
+                  <label class="form-check-label" for="body-type-{{body.id}}">
+                    {{body.type}}
+                  </label>
+                </div>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Body Type
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <div *ngFor="let body of types" class="form-check">
-              <input class="form-check-input" type="checkbox"  name="body" (change)="onChangeCheck($event)"
-                     value="{{body.id}}" id="body-type-{{body.id}}" [checked]="body.selected">
-              <label class="form-check-label" for="body-type-{{body.id}}">
-                {{body.type}}
-              </label>
-            </div>
-          </div>
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Mileage
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <label for="mileage" class="form-label">{{mileage}} miles or fewer</label>
+                <ngx-slider [(value)]="mileage" [options]="optionsMiles" id="mileage" (userChangeEnd)="onChangeMileage($event)"></ngx-slider>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Mileage
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <label for="mileage" class="form-label">{{mileage}} miles or fewer</label>
-            <ngx-slider [(value)]="mileage" [options]="optionsMiles" id="mileage" (userChangeEnd)="onChangeMileage($event)"></ngx-slider>
-          </div>
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Exterior Color
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <label *ngFor="let color of colors"  class="container">
+                  {{color.name.charAt(0).toUpperCase() + color.name.slice(1).toLowerCase()}}
+                  <input type="checkbox" value="{{color.id}}" name="color" (change)="onChangeCheck($event)" [checked]="color.selected">
+                  <span class="checkmark" [ngStyle]="{'background-color': color.name.toLowerCase()}"></span>
+                </label>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Exterior Color
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <label *ngFor="let color of colors"  class="container">
-              {{color.name.charAt(0).toUpperCase() + color.name.slice(1).toLowerCase()}}
-              <input type="checkbox" value="{{color.id}}" name="color" (change)="onChangeCheck($event)" [checked]="color.selected">
-              <span class="checkmark" [ngStyle]="{'background-color': color.name.toLowerCase()}"></span>
-            </label>
-          </div>
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Drivetrain
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <div *ngFor="let drivetrain of drivetrains" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="drivetrain" (change)="onChangeCheck($event)"
+                         value="{{drivetrain.id}}" id="drive-type-{{drivetrain.id}}" [checked]="drivetrain.selected">
+                  <label class="form-check-label" for="drive-type-{{drivetrain.id}}">
+                    {{drivetrain.name}}
+                  </label>
+                </div>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Drivetrain
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <div *ngFor="let drivetrain of drivetrains" class="form-check">
-              <input class="form-check-input" type="checkbox" name="drivetrain" (change)="onChangeCheck($event)"
-                     value="{{drivetrain.id}}" id="drive-type-{{drivetrain.id}}" [checked]="drivetrain.selected">
-              <label class="form-check-label" for="drive-type-{{drivetrain.id}}">
-                {{drivetrain.name}}
-              </label>
-            </div>
-          </div>
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Transmission
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <div *ngFor="let transmission of transmissions" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="transmission" (change)="onChangeCheck($event)"
+                         value="{{transmission.type}}" id="transmission-type-{{transmission.id}}" [checked]="transmission.selected">
+                  <label class="form-check-label" for="transmission-type-{{transmission.id}}">
+                    {{transmission.description}}
+                  </label>
+                </div>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Transmission
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <div *ngFor="let transmission of transmissions" class="form-check">
-              <input class="form-check-input" type="checkbox" name="transmission" (change)="onChangeCheck($event)"
-                     value="{{transmission.type}}" id="transmission-type-{{transmission.id}}" [checked]="transmission.selected">
-              <label class="form-check-label" for="transmission-type-{{transmission.id}}">
-                {{transmission.description}}
-              </label>
-            </div>
-          </div>
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Price
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <ngx-slider [(value)]="value" [(highValue)]="highValue" [options]="options" (userChange)="onPriceChange($event)"></ngx-slider>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Price
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <ngx-slider [(value)]="value" [(highValue)]="highValue" [options]="options" (userChange)="onPriceChange($event)"></ngx-slider>
-          </div>
-        </mat-expansion-panel>
+            <mat-expansion-panel>
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Condition
+                </mat-panel-title>
+              </mat-expansion-panel-header>
+              <div class="field-container">
+                <div *ngFor="let item of conditions" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="condition" (change)="onChangeCheck($event)"
+                         value="{{item.value}}" id="condition-type-{{item.name}}" [checked]="item.selected">
+                  <label class="form-check-label" for="condition-type-{{item.name}}">
+                    {{item.name}}
+                  </label>
+                </div>
+              </div>
+            </mat-expansion-panel>
 
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>
-              Condition
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <div class="field-container">
-            <div *ngFor="let item of conditions" class="form-check">
-              <input class="form-check-input" type="checkbox" name="condition" (change)="onChangeCheck($event)"
-                     value="{{item.value}}" id="condition-type-{{item.name}}" [checked]="item.selected">
-              <label class="form-check-label" for="condition-type-{{item.name}}">
-                {{item.name}}
-              </label>
-            </div>
-          </div>
-        </mat-expansion-panel>
-
-      </mat-accordion>
-    </mat-drawer>
-
-
-    <mat-drawer #drawerRight class="example-sidenav" mode="side" position="end">
-      <div class="sort-container">
-        <label id="example-radio-group-label">Sort By</label>
-        <mat-radio-group
-          aria-labelledby="example-radio-group-label"
-          class="example-radio-group"
-          [(ngModel)]="selectedSort">
-          <mat-radio-button class="example-radio-button" *ngFor="let sort of sortable" [value]="sort.id" (change)="onSortChange()">
-            {{sort.name}}
-          </mat-radio-button>
-        </mat-radio-group>
-      </div>
-    </mat-drawer>
-
-
-    <div class="example-sidenav-content">
-        <div
-          class="search-results"
-          infinite-scroll
-          [infiniteScrollDistance]="scrollDistance"
-          [infiniteScrollUpDistance]="scrollUpDistance"
-          [infiniteScrollThrottle]="throttle"
-          (scrolled)="onScroll()"
-          [scrollWindow]="true"
-
-        >
-          <div class="data "*ngFor="let auto of array">
-            <app-auto-card [auto]="auto!" [bookmarked]="true"></app-auto-card>
-          </div>
-          <div *ngIf="loading" class="loading">
-            <mat-progress-spinner
-              class="mat-progress-spinner"
-              [diameter]="100"
-              [strokeWidth]="4"
-              mode="indeterminate"
-              color="primary">
-            </mat-progress-spinner>
-          </div>
+          </mat-accordion>
         </div>
-    </div>
+      </mat-drawer>
 
-  </mat-drawer-container>
-</div>
+      <mat-drawer #drawerRight class="example-sidenav" mode="side" position="end">
+        <div class="sort-drawer">
+          <label id="example-radio-group-label">Sort By</label>
+          <mat-radio-group
+            aria-labelledby="example-radio-group-label"
+            class="example-radio-group"
+            [(ngModel)]="selectedSort">
+            <mat-radio-button class="example-radio-button" *ngFor="let sort of sortable" [value]="sort.id" (change)="onSortChange()">
+              {{sort.name}}
+            </mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </mat-drawer>
+
+      <mat-drawer-content class="example-content">
+
+        <div *ngFor="let auto of array">
+          <app-auto-card [auto]="auto!" [bookmarked]="false"></app-auto-card>
+        </div>
+        <div *ngIf="loading" class="loading">
+          <mat-progress-spinner
+            class="mat-progress-spinner"
+            [diameter]="100"
+            [strokeWidth]="4"
+            mode="indeterminate"
+            color="primary">
+          </mat-progress-spinner>
+        </div>
+
+
+      </mat-drawer-content>
+
+    </mat-drawer-container>
+  </div>

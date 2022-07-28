@@ -93,6 +93,7 @@ export class AutoComponent implements OnInit {
   buildImageItems(auto: Auto): GalleryItem[] {
     let items = []
 
+
     let angularFront = new ImageItem({
       thumb: auto.stockImage!.imageAngularFront,
       src: auto.stockImage!.imageAngularFront,
@@ -118,11 +119,13 @@ export class AutoComponent implements OnInit {
       src: auto.stockImage!.imageAngularRear,
     });
 
-    items.push(angularFront);
-    items.push(frontView);
-    items.push(sideView);
-    items.push(backView);
-    items.push(angularBack);
+    if(auto.stockImage?.imageAngularFront != null) {
+      items.push(angularFront);
+      items.push(frontView);
+      items.push(sideView);
+      items.push(backView);
+      items.push(angularBack);
+    }
 
     for(let i = 0; i < auto.images.length; i++) {
       let image = auto.images[i];

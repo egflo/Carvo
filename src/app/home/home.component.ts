@@ -7,6 +7,20 @@ import {Location} from "@angular/common";
 import {AutoService} from "../auto/auto.service";
 import {Make} from "../api/make";
 
+
+
+
+
+/** Error when invalid control is dirty, touched, or submitted. */
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
+
+
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -14,7 +28,7 @@ import {Make} from "../api/make";
 })
 export class HomeComponent implements OnInit {
   selected = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
-  selectFormControl = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
+  selectedModel= new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
   nativeSelectFormControl = new FormControl('valid', [
     Validators.required,
     Validators.pattern('valid'),
@@ -46,7 +60,6 @@ export class HomeComponent implements OnInit {
   }
 
   getAllModelsFromMake(make: String): void {
-    console.log("getAllModelsFromMake: " + make);
     this.homeService.getAllModelsFromMake(make).subscribe(models => {
       this.models = models;
       this.modelsDisabled = false;
@@ -58,17 +71,14 @@ export class HomeComponent implements OnInit {
   }
 
   onBrandClick(event: string) {
-    console.log("onBrandClick: " + event);
     //Get id of clicked brand
     //router
     this.router.navigate(['/results', event]).then(r => {
       console.log("navigation success");
     });
-
   }
 
   onTypeClick(type: string) {
-    console.log("onTypeClick: " + type);
     this.router.navigate(['/results', type]).then(r => {
       console.log("navigation success");
     });
