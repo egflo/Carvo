@@ -26,11 +26,7 @@ import {MatDrawerContainer, MatSidenavContainer} from "@angular/material/sidenav
   styleUrls: ['./results-mobile.component.css']
 })
 export class ResultsMobileComponent implements OnInit {
-
-  bottomScroll: boolean = false;
-
   query!: String;
-
   results$!: Observable<Page>
   private url = new Subject<String>();
   private params = new Subject<URLSearchParams>();
@@ -43,9 +39,9 @@ export class ResultsMobileComponent implements OnInit {
   array = [] as Auto[];
   show: Boolean = true;
   throttle = 150;
-  scrollDistance = 1;
+  scrollDistance = 2;
   scrollUpDistance = 1.5;
-  loading: Boolean = true;
+  loading: boolean = true;
 
 
   //Filters
@@ -115,7 +111,12 @@ export class ResultsMobileComponent implements OnInit {
   ];
 
   bookmarks: Bookmark[] = [];
-  sorts: string[] = ['Winter', 'Spring', 'Summer', 'Autumn'];
+  public filterOpen: boolean = false;
+  public sortOpen: boolean = false;
+  public currentScrollPosition: number = 0;
+  selector: string = ".mobile-container";
+
+
 
   constructor(
     private route: ActivatedRoute,
@@ -136,6 +137,12 @@ export class ResultsMobileComponent implements OnInit {
     this.limit = Number(queryParams.get('limit')) || 10;
 
 
+    if(this.auth.isAuthenticated()) {
+      this.resultsService.getBookmarks().subscribe(bookmarks => {
+        this.bookmarks = bookmarks;
+      })
+    }
+
 
     let params = this.buildParams()
     this.resultsService.getResults(this.query + "?" + params.toString()).subscribe(results => {
@@ -143,17 +150,9 @@ export class ResultsMobileComponent implements OnInit {
       this.numberOfElements = results.totalElements;
       this.last = results.last;
       this.loading = false;
+      console.log(this.loading);
     } , error => {
       console.log(error);
-    });
-
-    this.resultsService.getBookmarks().subscribe(bookmarks => {
-      this.bookmarks = bookmarks;
-    });
-
-    this.route.queryParams.subscribe(params => {
-      this.page = params['page'] || 1;
-      this.limit = params['limit'] || 10;//get results for new value
     });
 
 
@@ -174,12 +173,20 @@ export class ResultsMobileComponent implements OnInit {
   }
 
 
-  search(term: String): void {
+  search(term: String, scrollable: boolean = false): void {
     this.loading = true;
-    this.array = [];
+    if(!scrollable) {
+      this.page = 1;
+      this.array = [];
+    }
 
     this.resultsService.getResults(term).subscribe(results => {
-      this.array = results.content;
+      if(!scrollable) {
+        this.array = results.content;
+      }
+      else {
+        this.array = this.array.concat(results.content);
+      }
       this.numberOfElements = results.totalElements;
       this.last = results.last;
       this.loading = false;
@@ -267,17 +274,14 @@ export class ResultsMobileComponent implements OnInit {
   }
 
   onPageChange($event: PageEvent) {
-    console.log("ResultsComponent.onPageChange");
-    console.log($event);
 
-    let page = $event.pageIndex + 1;
-    let limit = $event.pageSize;
+    this.page = $event.pageIndex + 1;
+    this.limit = $event.pageSize;
 
     const query = this.buildURL()
-    const params = this.buildParams(page, limit);
+    const params = this.buildParams();
 
     this.search(`${query}?${params.toString()}`);
-    //this.router.navigate(['/results'], {queryParams: {page: $event.pageIndex + 1, limit: $event.pageSize}});
   }
 
   onChangeSelect($event: any) {
@@ -404,7 +408,7 @@ export class ResultsMobileComponent implements OnInit {
     return query;
   }
 
-  buildParams(page: number = 1, limit: number = 10): URLSearchParams {
+  buildParams(): URLSearchParams {
     let params: URLSearchParams = new URLSearchParams();
 
     let selectedTypes = this.types.filter(t => t.selected);
@@ -481,9 +485,6 @@ export class ResultsMobileComponent implements OnInit {
       codes = codes.substring(0, codes.length - 1);
       params.append('condition_code', codes);
     }
-
-    this.page = page;
-    this.limit = limit;
 
     params.append('price_min', this.value.toString());
     params.append('price_max', this.highValue.toString());
@@ -780,31 +781,38 @@ export class ResultsMobileComponent implements OnInit {
     this.search(`${url}?${params.toString()}`);
   }
 
-  @HostListener('window:scroll', ['$event'])
-  onScroll(event : any) : void {
-
+  onScrollDown() {
     const scrollY = window.scrollY;
     const scrollHeight = document.body.scrollHeight;
     const clientHeight = document.body.clientHeight;
     const scrollPosition = scrollY + clientHeight;
 
-    if (this.last) {
-      return;
-    }
 
-
-    console.log(this.loading)
-    if(scrollPosition >= scrollHeight - 100 && !this.loading && !this.last) {
-      console.log('scrolled to bottom');
-      this.page = this.page + 1;
-      this.loading = true;
-
-
+    //if we are already at the end of the list, don't do anything
+    //if loading is true, don't do anything
+    if( !this.last  || !this.loading) {
+      this.page++;
+      console.log("page: " + this.page);
       const url = this.buildURL();
-      const params = this.buildParams(this.page);
-      const full_path = `${url}?${params.toString()}`;
-      console.log(full_path);
+      const params = this.buildParams();
 
+      this.search(`${url}?${params.toString()}`, true);
     }
+
   }
+
+  toggleFilter() {
+    if(this.sortOpen) {
+      this.sortOpen = false;
+    }
+    this.filterOpen = !this.filterOpen;
+  }
+
+  toggleSort() {
+    if(this.filterOpen) {
+      this.filterOpen = false;
+    }
+    this.sortOpen = !this.sortOpen;
+  }
+
 }

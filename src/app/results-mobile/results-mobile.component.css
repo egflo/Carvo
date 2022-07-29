@@ -1,9 +1,4 @@
 
-
-.filter-container {
-}
-
-
 .mat-card {
   width: 400px;
   margin: 0 auto;
@@ -77,6 +72,7 @@
 
 .mobile-container {
   width: 100vw;
+  min-height: 85vh;
   height: 100%;
 }
 
@@ -102,17 +98,10 @@
   align-items: center;
   justify-content: space-between;
   height: 100%;
-
 }
 
 .spacer {
   flex: 1;
-}
-
-.example-container {
-
-  min-height: 100vh;
-
 }
 
 .loading {
@@ -124,16 +113,30 @@
   width: 100vw;
 }
 
-
 .filter-drawer {
-  border: 1px solid red;
-  width: 100%;
+  background-color: white;
 }
 
 .sort-drawer {
   padding: 1rem;
-  border: 1px solid red;
-  width: 100%;
-
+  background-color: white;
 }
+.sidebar {
+  height: 31rem;/* 100% Full-height */
+  width: 100%; /* 0 width - change this with JavaScript */
+  z-index: 99; /* Stay on top */
+  overflow-x: hidden; /* Disable horizontal scroll */
+  transition: 0.5s; /* 0.5 second transition effect to slide in the sidebar */
+  transition: margin-left .5s; /* If you want a transition effect */
+  overflow-y: auto;
+}
+
+.data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
 

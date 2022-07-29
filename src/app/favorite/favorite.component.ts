@@ -12,31 +12,33 @@ import {FavoriteService} from "./favorite.service";
 export class FavoriteComponent implements OnInit {
   page: number = 0;
   last: Boolean = false;
-  array = [] as Bookmark[];
+  array = [] as any[];
   show: Boolean = true;
-  throttle = 150;
-  scrollDistance = 2;
-  scrollUpDistance = 1.5;
+  loading: boolean = false;
+  sum = 100;
+  throttle = 300;
+  scrollDistance = 1;
+  scrollUpDistance = 2;
   direction = "";
-  loading: Boolean = false;
+  modalOpen = false;
 
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private auth: AuthService,
     private service: FavoriteService
-  ) { }
+  ) {
+
+  }
 
   ngOnInit(): void {
-    console.log(this.auth.isAuthenticated());
     if(this.auth.isAuthenticated()) {
       this.getBookmark();
     }
   }
 
-  @HostListener('scroll', ['$event'])
+  //@HostListener('window:scroll', ['$event'])
   onScroll() {
-    console.log("scroll");
     if (this.last) {
       return;
     }
@@ -45,9 +47,11 @@ export class FavoriteComponent implements OnInit {
   }
 
   getBookmark() : void {
+    console.log(this.page);
     this.loading = true;
     this.service.getWatchlist(this.page).subscribe(
       data => {
+        console.log("Get Watchlist Success");
         this.page = data.pageable.pageNumber;
         this.last = data.last;
         //Add more to list

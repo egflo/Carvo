@@ -52,6 +52,7 @@ import {MatExpansionModule} from "@angular/material/expansion";
 import {MatRadioModule} from "@angular/material/radio";
 import { AutoMobileComponent } from './auto/auto-mobile/auto-mobile.component';
 import { AutoDesktopComponent } from './auto/auto-desktop/auto-desktop.component';
+import { MobileFilterComponent } from './results-mobile/mobile-filter/mobile-filter.component';
 
 @NgModule({
   declarations: [
@@ -67,6 +68,7 @@ import { AutoDesktopComponent } from './auto/auto-desktop/auto-desktop.component
     ResultsMobileComponent,
     AutoMobileComponent,
     AutoDesktopComponent,
+    MobileFilterComponent,
   ],
   imports: [
     BrowserModule,
