@@ -1,6 +1,6 @@
 <div class="card">
   <div class="image-container">
-    <gallery id="gallery-{{auto.id}}" class="test" [thumb]="false" [counter]="false" [dots]="true"></gallery>
+    <gallery id="gallery-{{auto.id}}" class="test" [thumb]="false" [counter]="false" [dots]="false"></gallery>
 
     <button class="favorite-button"
             mat-icon-button
@@ -13,7 +13,7 @@
   <div class="card-body">
 
     <a class="header-link" (click)="onClick(auto.id)">
-      <h5 class="card-title">{{auto.year}} {{auto.make.name}} {{auto.model}}</h5>
+      <h5 class="card-title">{{auto.year}} {{auto.make.name}} {{auto.model.name}}</h5>
     </a>
 
     <div class="subheader">

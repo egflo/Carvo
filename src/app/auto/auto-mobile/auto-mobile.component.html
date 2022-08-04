@@ -16,7 +16,7 @@
     </div>
 
     <div class="info-header">
-      <h3 class="header"> {{auto.year}} {{auto.make.name}} {{auto.model}} {{auto.trim.description}}</h3>
+      <h3 class="header"> {{auto.year}} {{auto.make.name}} {{auto.model.name}} {{auto.trim.description}}</h3>
       <div class="subheader">
         <p class="price-text">{{formatCurrency(auto.price)}}</p>
         <div *ngIf="auto.dealer as dealer">

@@ -3,5 +3,7 @@ export interface Engine {
   cylinders: number;
   displacement: number;
   type: string;
-  extra: string;
+  torque: string;
+  horsepower: number;
+  power: string;
 }

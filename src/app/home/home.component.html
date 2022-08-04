@@ -4,15 +4,19 @@
 <div class="search-content">
   <p class="search-title">Search Listings</p>
 
-  <form class="form-container">
+  <form class="form-container" (submit)="onSubmit()">
     <mat-form-field appearance="fill">
       <mat-label>Find By Make</mat-label>
-      <mat-select (selectionChange)="handleMakeSelected()">
+      <mat-select [formControl]="selected" [errorStateMatcher]="matcher">
         <mat-option *ngFor="let option of makes" [value]="option.name">
           {{option.name}}
         </mat-option>
       </mat-select>
+      <mat-hint>Select a make to see all models</mat-hint>
+      <mat-error *ngIf="selected.hasError('required')">Please select a make</mat-error>
     </mat-form-field>
+
+
     <mat-form-field appearance="fill">
       <mat-label>Find By Model</mat-label>
       <mat-select [formControl]="selectedModel" [errorStateMatcher]="matcher" [disabled]="modelsDisabled">
@@ -20,18 +24,23 @@
           {{option}}
         </mat-option>
       </mat-select>
-      <mat-error *ngIf="selectedModel.hasError('required')">You must make a selection</mat-error>
-    </mat-form-field>
-    <mat-form-field class="example-full-width" appearance="fill">
-      <mat-label>Postcode</mat-label>
-      <input matInput placeholder="Ex. 90805">
+      <mat-hint>Select a model to see all years</mat-hint>
+      <mat-error *ngIf="selectedModel.hasError('required')">Please select a model</mat-error>
     </mat-form-field>
 
-    <button type="button"
-            class="btn btn-primary"
-            [disabled]="true"
-    >
-      Search</button>
+    <mat-form-field class="example-full-width" appearance="fill">
+      <mat-label>Postcode</mat-label>
+      <input matInput placeholder="Ex. 90805" [formControl]="postcodeModel" [errorStateMatcher]="matcher">
+      <mat-hint>Enter a postcode to see all listings</mat-hint>
+      <mat-error *ngIf="postcodeModel.hasError('required')">Please enter a postcode</mat-error>
+      <mat-error *ngIf="postcodeModel.hasError('pattern')">Please enter a valid postcode</mat-error>
+      <mat-error *ngIf="postcodeModel.hasError('minLength')">Please enter a valid postcode</mat-error>
+      <mat-error *ngIf="postcodeModel.hasError('maxLength')">Please enter a valid postcode</mat-error>
+
+    </mat-form-field>
+
+
+    <button type="submit" mat-raised-button color="primary"  >Search</button>
 
   </form>
 

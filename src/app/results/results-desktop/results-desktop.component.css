@@ -1,0 +1,264 @@
+
+.container-main {
+  display: flex;
+  flex-direction: row;
+  width: 100vw;
+  position: relative;
+}
+
+
+.filter-container {
+  display: block;
+  flex-basis: 450px;
+  flex-grow: 0;
+  flex-shrink: 0;
+  max-width: 450px;
+
+  position: -webkit-sticky;
+  position: sticky;
+  top: 0;
+}
+
+.data-container {
+  display:flex;
+  flex-wrap: wrap;
+
+}
+
+
+.results-container {
+  display: block;
+  flex-basis: 100%;
+  flex-grow: 1;
+  flex-shrink: 1;
+  max-width: 100%;
+}
+
+.mat-card {
+  width: 400px;
+  margin: 0 auto;
+  display: block;
+  padding: 0;
+}
+
+.accordion {
+
+  width: 400px;
+  background-color: white;
+
+}
+
+.accordion-item {
+  display: block;
+  border: solid 1px #ccc;
+}
+
+.accordion-item + .accordion-item {
+  border-top: none;
+}
+
+.accordion-item-header {
+  display: flex;
+  align-content: center;
+  justify-content: space-between;
+  font-weight: bold;
+}
+
+.accordion-item-description {
+  font-size: 0.85em;
+  color: #999;
+  height: 1rem;
+}
+
+.accordion-item-header,
+.accordion-item-body {
+  padding: 16px;
+}
+.accordion-item-body {
+  background-color: white;
+}
+
+.accordion-item-header:hover {
+  cursor: pointer;
+  background-color: #eee;
+}
+
+.accordion-item:first-child {
+  border-top-left-radius: 4px;
+  border-top-right-radius: 4px;
+}
+
+.accordion-item:last-child {
+  border-bottom-left-radius: 4px;
+  border-bottom-right-radius: 4px;
+}
+
+
+.example-container {
+  position: absolute;
+  top: 60px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+}
+
+
+
+.result-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 75vw;
+  height: 100%;
+}
+
+
+
+.pagination {
+  width: 100%;
+}
+
+.result-container {
+}
+
+
+
+.form-select.end-year {
+  margin-bottom: 0.5rem;
+}
+
+
+
+/* Customize the label (the container) */
+.container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+
+
+  position: relative;
+  padding-left: 35px;
+  margin-bottom: 12px;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* Hide the browser's default radio button */
+.container input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+  height: 0;
+  width: 0;
+}
+
+/* Create a custom radio button */
+.checkmark {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 25px;
+  width: 25px;
+  background-color: #eee;
+  border-radius: 50%;
+}
+
+/* On mouse-over, add a grey background color */
+.container:hover input ~ .checkmark {
+  background-color: #ccc;
+}
+
+/* When the radio button is checked, add a blue background */
+.container input:checked ~ .checkmark {
+  background-color: #2196F3;
+}
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+.checkmark:after {
+  content: "";
+  position: absolute;
+  display: none;
+}
+
+/* Show the indicator (dot/circle) when checked */
+.container input:checked ~ .checkmark:after {
+  display: block;
+}
+
+/* Style the indicator (dot/circle) */
+.container .checkmark:after {
+  top: 9px;
+  left: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: white;
+}
+
+
+.year-container {
+  display: grid;
+  grid-template-columns: 1fr  1fr;
+  grid-gap: 1rem;
+}
+
+.make-container {
+  height: 25rem;
+  overflow: auto;
+  padding: 0.5rem;
+}
+
+
+.filter-chips-title {
+  margin-top: 0.5rem;
+}
+
+.filter-chips-title  h1{
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin: 0;
+}
+.filter-chips-content {
+  padding: 1rem;
+}
+
+
+.results-text {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  font-size: 1.0rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+.filter-link {
+  text-decoration: none;
+  color: #2196F3;
+  pointer: pointer;
+}
+
+.sort-field {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+  height: 5rem;
+}
+
+@media screen and (max-width: 767px) {
+
+
+}
+
+@media screen and (max-width: 575px) {
+
+}

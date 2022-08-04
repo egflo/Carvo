@@ -14,7 +14,6 @@ import {environment} from "../../environments/environment";
 })
 export class AutoCardService {
   private handleError: HandleError;
-  private bookmarkURL: string = 'http://localhost:8080/bookmark/';
   private httpOptions = {
     headers: new HttpHeaders({
       'Content-Type':  'application/json',

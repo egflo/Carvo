@@ -12,6 +12,8 @@ import {Drivetrain} from "../api/drivetrain";
 import {Transmission} from "../api/transmission";
 import {AuthService} from "../auth.service";
 import {Bookmark} from "../api/bookmark";
+import {environment} from "../../environments/environment";
+import {Model} from "../api/model";
 
 
 
@@ -20,6 +22,7 @@ import {Bookmark} from "../api/bookmark";
 })
 export class ResultsService {
   private handleError: HandleError;
+  private URL = environment.apiUrl;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -38,47 +41,54 @@ export class ResultsService {
 
   //page=${page}&limit=${limit}
   getResults(query:String): Observable<Page> {
-    let url = `http://localhost:8080/auto/search/${encodeURI(query.toString())}`;
+    let url = `${environment.apiUrl}/auto/search/${encodeURI(query.toString())}`;
 
     return this.http.get<Page>(url,this.httpOptions).pipe(
       catchError(this.handleError<Page>(`getResults`))
     );}
 
   getMakes(): Observable<[Make]> {
-    let url = `http://localhost:8080/make/all`;
+    let url = `${environment.apiUrl}/make/all?sort=name`;
     return this.http.get<[Make]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Make]>(`getMakes`))
     );}
 
+  getModels(makeId: Number): Observable<[Model]> {
+    let url = `${environment.apiUrl}/model/make/${makeId}?sort=name`;
+    return this.http.get<[Model]>(url, this.httpOptions).pipe(
+      catchError(this.handleError<[Model]>(`getModels`))
+    );}
+
+
   getBodyTypes(): Observable<[BodyType]> {
-    let url = `http://localhost:8080/body/type/all`;
+    let url = `${environment.apiUrl}/body/type/all`;
     return this.http.get<[BodyType]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[BodyType]>(`getBodyTypes`))
     );}
 
   getFuelTypes(): Observable<[Fuel]> {
-    let url = `http://localhost:8080/auto/fuel/all`;
+    let url = `${environment.apiUrl}/auto/fuel/all`;
     return this.http.get<[Fuel]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Fuel]>(`getFuelTypes`))
     );
   }
 
   getColors(): Observable<[Color]> {
-    let url = `http://localhost:8080/auto/color/all`;
+    let url = `${environment.apiUrl}/auto/color/all`;
     return this.http.get<[Color]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Color]>(`getColors`))
     );
   }
 
   getDrivetrain(): Observable<[Drivetrain]> {
-    let url = `http://localhost:8080/auto/drivetrain/all`;
+    let url = `${environment.apiUrl}/auto/drivetrain/all`;
     return this.http.get<[Drivetrain]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Drivetrain]>(`getDrivetrain`))
     );
   }
 
   getTransmissions(): Observable<[Transmission]> {
-    let url = `http://localhost:8080/auto/transmission/all`;
+    let url = `${URL}/auto/transmission/all`;
     return this.http.get<[Transmission]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Transmission]>(`getTransmissions`))
     );
@@ -94,7 +104,7 @@ export class ResultsService {
       })
     };
 
-    let url = `http://localhost:8080/bookmark/watchlist/all`;
+    let url = `${URL}/bookmark/watchlist/all`;
     return this.http.get<[Bookmark]>(url, httpOptionsBookmark).pipe(
       catchError(this.handleError<[Bookmark]>(`getBookmarks`))
     );

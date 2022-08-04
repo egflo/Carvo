@@ -11,6 +11,7 @@ import {Image} from "./image";
 import {Option} from "./option";
 import {Body} from "./body";
 import {StockImage} from "./stock-image";
+import {Model} from "./model";
 
 export interface Auto {
   id: number;
@@ -37,7 +38,7 @@ export interface Auto {
   make: Make;
   seating: number;
   mileage: number;
-  model: string;
+  model: Model;
   power: string;
   price: number;
   torque: string;
@@ -47,5 +48,5 @@ export interface Auto {
   year: number;
   images: Image[];
   options: Option[];
-  stockImage?: StockImage;
+  //stockImage?: StockImage;
 }

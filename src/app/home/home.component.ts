@@ -26,18 +26,19 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.css']
 })
-export class HomeComponent implements OnInit {
-  selected = new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
-  selectedModel= new FormControl('valid', [Validators.required, Validators.pattern('valid')]);
-  nativeSelectFormControl = new FormControl('valid', [
-    Validators.required,
-    Validators.pattern('valid'),
-  ]);
 
+export class HomeComponent implements OnInit {
   matcher = new ErrorStateMatcher();
   makes: [Make] | undefined
   models: [String] | undefined
   modelsDisabled: boolean = true;
+
+
+  selected = new FormControl('',[Validators.required]);
+  selectedModel= new FormControl({value: '', disabled: false}, [Validators.required]);
+  postcodeModel = new FormControl('', [Validators.required, Validators.minLength(5),
+    Validators.maxLength(5), Validators.pattern('[0-9]{5}')]);
+
 
   constructor(
     private route: ActivatedRoute,
@@ -50,24 +51,37 @@ export class HomeComponent implements OnInit {
     this.homeService.getAllMake().subscribe(makes => {
       this.makes = makes;
     });
+
+    this.selected.valueChanges.subscribe(value => {
+      this.getAllModelsFromMake(value!);
+    }  );
   }
 
-  handleMakeSelected() {
-    const make = this.selected.value;
-    if (make) {
-      this.getAllModelsFromMake(make);
-    }
-  }
 
   getAllModelsFromMake(make: String): void {
+    this.modelsDisabled = true;
     this.homeService.getAllModelsFromMake(make).subscribe(models => {
       this.models = models;
+      console.log(this.models);
       this.modelsDisabled = false;
     });
   }
 
-  submit() {
+  onSubmit() {
+
+    //check if fields are valid
+    if(this.postcodeModel.invalid || this.selected.invalid || this.selectedModel.invalid) {
+      console.log("invalid");
+      return;
+    }
+
     console.log("submit");
+    this.router.navigate(['/results', this.selected.value, this.selectedModel.value, this.postcodeModel.value]).then(r => {
+      console.log("navigation success");
+    } ).catch(e => {
+
+      console.log(e.toString());
+    } );
   }
 
   onBrandClick(event: string) {

@@ -17,16 +17,17 @@ import {AuthService} from "../auth.service";
 import {SearchModel} from "../model/search-model";
 import {Direction} from "../model/direction";
 import {Bookmark} from "../api/bookmark";
+import {ModelModel} from "../model/model-model";
+import {ModelTuple} from "../model/model-tuple";
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.css']
 })
-export class ResultsComponent implements OnInit {
+export class ResultsComponent {
   query!: String;
 
-  results$!: Observable<Page>
   private url = new Subject<String>();
   private params = new Subject<URLSearchParams>();
 
@@ -45,6 +46,8 @@ export class ResultsComponent implements OnInit {
 
 
   makes: MakeModel[] = [];
+  //List of list of models
+  models: ModelTuple[] = [];
   types: BodyModel[] = [];
   fuels: FuelModel[] = [];
   colors: ColorModel[] = []
@@ -108,92 +111,61 @@ export class ResultsComponent implements OnInit {
   bookmarks: Bookmark[] = [];
 
   constructor(
-    private route: ActivatedRoute,
-    private router: Router,
-    private location: Location,
-    private resultsService: ResultsService,
-    private formBuilder: FormBuilder,
-    private auth: AuthService
+    protected route: ActivatedRoute,
+    protected router: Router,
+    protected location: Location,
+    protected resultsService: ResultsService,
+    protected formBuilder: FormBuilder,
+    protected auth: AuthService
   ) {}
 
-  ngOnInit(): void {
-    const routeParams = this.route.snapshot.paramMap;
-    const queryParams = this.route.snapshot.queryParamMap;
-
-    this.query = routeParams.get('id') || '';
-    this.page =  Number(queryParams.get('page')) || 1;
-    this.limit = Number(queryParams.get('limit')) || 10;
-
-    let params = this.buildParams()
-    this.results$ = this.resultsService.getResults(this.query + "?" + params.toString());
-
-   // this.results$ = this.url.pipe(
-      //ignore new values if they are the same as the last value
-    //  distinctUntilChanged(),
-
-      //switch to new value
-     // switchMap((url: String) => {
-     //   return this.resultsService.getResults(url);
-    //  })
-    //);
-
-
-    if (this.auth.isAuthenticated()) {
-      this.resultsService.getBookmarks().subscribe(bookmarks => {
-        this.bookmarks = bookmarks;
-      });
-    }
-
-
-    this.route.queryParams.subscribe(params => {
-      this.page = params['page'] || 1;
-      this.limit = params['limit'] || 10;//get results for new value
-    });
-
-    this.startYears = this.generateArrayYears(1950, new Date().getFullYear());
-    this.endYears = this.generateArrayYears(1950, new Date().getFullYear()).reverse();
-
-    this.buildMakes();
-
-    this.buildBodyTypes();
-
-    this.buildFuels();
-
-    this.buildColors();
-
-    this.buildDrivetrains();
-
-    this.buildTransmissions();
-
-  }
 
   ngAfterViewInit(): void {
     console.log("After view init");
     this.fillChiplist();
   }
 
+
+  search(term: String): void {
+
+  }
+
+
   login(): void {
     this.auth.login();
   }
 
-  search(term: String): void {
-    console.log("Searching for: " + term);
-    //Set observable to none to load new results
-    //this.url.next(term);
-
-    this.results$ = this.resultsService.getResults(term);
+  buildYears(): void {
+    this.startYears = this.generateArrayYears(1989, new Date().getFullYear());
+    this.endYears = this.generateArrayYears(1989, new Date().getFullYear()).reverse();
   }
 
   buildMakes() : void {
     this.resultsService.getMakes().subscribe(makes => {
-      for (let make of makes) {
-        if(make.name.toLowerCase() !== "unknown") {
-          this.makes.push(
-            { id: make.id, name: make.name, selected: this.query.toLowerCase() === make.name.toLowerCase() }
-          );
-        }
-      }
+      makes = makes.sort((a, b) => { return a.name.localeCompare(b.name); });
+      makes.forEach(make => {
+        this.makes.push(
+          { id: make.id, name: make.name, selected: this.query.toLowerCase() === make.name.toLowerCase() }
+        );
+      });
       this.fillChiplist()
+    });
+  }
+
+  buildModels(makeId: Number, makeName: string): void {
+
+    let get_models: ModelModel[] = [];
+
+    this.resultsService.getModels(makeId).subscribe(models => {
+      for (let model of models) {
+        get_models.push(
+          { id: model.id, make: model.make, name: model.name,  selected: false }
+        );
+      }
+
+      //Tuple
+      let tuple = { key: makeName, value: get_models } as ModelTuple;
+      this.models.push(tuple);
     });
   }
 
@@ -336,9 +308,23 @@ export class ResultsComponent implements OnInit {
     const name  = selectElement.name;
 
     console.log(`${name} ${value}`);
+
+    if(name.includes("model")) {
+      let make_model = value.split("_");
+      let make = make_model[0];
+      let model = make_model[1];
+
+      let find_make = this.models.find(m => m.key === make);
+      let find_model = find_make!.value.find(m => m.id === Number(model));
+      find_model!.selected = !find_model!.selected;
+    }
+
     if(name === 'make') {
       let object = this.makes.find(m => m.id === Number(value));
       object!.selected = !object!.selected;
+
+      let makeId = object!.id;
+      this.buildModels(makeId, object!.name);
     }
     if(name === 'body') {
       let object = this.types.find(t => t.id === Number(value));
@@ -400,8 +386,25 @@ export class ResultsComponent implements OnInit {
   buildParams(page: number = 1, limit: number = 10): URLSearchParams {
     let params: URLSearchParams = new URLSearchParams();
 
-    let selectedTypes = this.types.filter(t => t.selected);
+
     let codes = '';
+
+    let models_selected = []
+    for(let model of this.models) {
+      let selected = model.value.filter(m => m.selected);
+      models_selected.push(...selected);
+    }
+
+    if(models_selected.length > 0) {
+      codes +=  models_selected.map(m => m.id).join('_') ;
+    }
+
+    if(codes.length > 0) {
+      params.set('model_code', codes);
+    }
+
+    let selectedTypes = this.types.filter(t => t.selected);
+    codes = '';
     for(let type of selectedTypes) {
       codes += type.id + "_";
     }

@@ -4,14 +4,14 @@
       <div class="header">
         <div class="image-container">
           <div *ngIf="(images$ | async) as items; else loading">
-            <gallery class="test" [items]="items" thumbPosition="left" [thumb]="false"></gallery>
+            <gallery class="test" [items]="items" thumbPosition="bottom" [thumb]="true"></gallery>
           </div>
           <button class="favorite-button"
                   mat-icon-button
                   [color]="bookmarkExists? 'warn' : 'accent'"
                   aria-label="Add to Watchlist"
                   (click)="onBookmarkClick(auto.id)">
-            <mat-icon>favorite</mat-icon>
+            <mat-icon>favorite_outline</mat-icon>
           </button>
         </div>
       </div>
@@ -28,7 +28,7 @@
       <div class="card">
         <div class="card-header" style="background-color:#1976d2;">
           <div class="info-header">
-            <h3 class="header"> {{auto.year}} {{auto.make.name}} {{auto.model}} {{auto.trim.description}}</h3>
+            <h3 class="header"> {{auto.year}} {{auto.make.name}} {{auto.model.name}} {{auto.trim.description}}</h3>
             <div class="subheader">
               <p class="sub-text">{{formatCurrency(auto.price)}}</p>
               <div *ngIf="auto.dealer as dealer">

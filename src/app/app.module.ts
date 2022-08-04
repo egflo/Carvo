@@ -47,12 +47,12 @@ import { WatchlistComponent } from './watchlist/watchlist.component';
 import {platformBrowserDynamic} from "@angular/platform-browser-dynamic";
 import { FavoriteComponent } from './favorite/favorite.component';
 import {ViewStateService} from "./view-state.service";
-import { ResultsMobileComponent } from './results-mobile/results-mobile.component';
+import { ResultsMobileComponent } from './results/results-mobile/results-mobile.component';
 import {MatExpansionModule} from "@angular/material/expansion";
 import {MatRadioModule} from "@angular/material/radio";
 import { AutoMobileComponent } from './auto/auto-mobile/auto-mobile.component';
 import { AutoDesktopComponent } from './auto/auto-desktop/auto-desktop.component';
-import { MobileFilterComponent } from './results-mobile/mobile-filter/mobile-filter.component';
+import { ResultsDesktopComponent } from './results/results-desktop/results-desktop.component';
 
 @NgModule({
   declarations: [
@@ -68,7 +68,7 @@ import { MobileFilterComponent } from './results-mobile/mobile-filter/mobile-fil
     ResultsMobileComponent,
     AutoMobileComponent,
     AutoDesktopComponent,
-    MobileFilterComponent,
+    ResultsDesktopComponent,
   ],
   imports: [
     BrowserModule,
@@ -90,7 +90,9 @@ import { MobileFilterComponent } from './results-mobile/mobile-filter/mobile-fil
     MatToolbarModule,
     MatListModule,
     CdkAccordionModule,
-    GalleryModule,
+    GalleryModule.withConfig({
+      imageSize: 'contain',
+    }),
     FormsModule,
     NgxSliderModule,
     MatInputModule,

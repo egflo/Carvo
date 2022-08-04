@@ -11,7 +11,6 @@
 
 }
 
-
 .search-title {
   font-size: 1.5rem;
   font-weight: bold;
@@ -22,12 +21,13 @@
 @media screen and (max-width: 767px) {
 
   .search-title {
+    display: none;
     font-size: 1.2rem;
     margin: 1rem;
   }
 
   .search-results {
-    width: 100vw;
+    display: none;
   }
 
 }
@@ -37,11 +37,10 @@
 
 @media screen and (max-width: 575px) {
   .search-title {
-    font-size: 1.2rem;
-    margin: 1rem;
+    display: none;
   }
 
   .search-results {
-    width: 100vw;
+    display: none;
   }
 }

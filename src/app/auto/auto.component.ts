@@ -92,41 +92,6 @@ export class AutoComponent implements OnInit {
 
   buildImageItems(auto: Auto): GalleryItem[] {
     let items = []
-
-
-    let angularFront = new ImageItem({
-      thumb: auto.stockImage!.imageAngularFront,
-      src: auto.stockImage!.imageAngularFront,
-    });
-
-    let frontView = new ImageItem({
-      thumb: auto.stockImage!.imageFront,
-      src: auto.stockImage!.imageFront,
-    });
-
-    let sideView = new ImageItem({
-      thumb: auto.stockImage!.imageSide,
-      src: auto.stockImage!.imageSide,
-    });
-
-    let backView = new ImageItem({
-      thumb: auto.stockImage!.imageRear,
-      src: auto.stockImage!.imageRear,
-    });
-
-    let angularBack = new ImageItem({
-      thumb: auto.stockImage!.imageAngularRear,
-      src: auto.stockImage!.imageAngularRear,
-    });
-
-    if(auto.stockImage?.imageAngularFront != null) {
-      items.push(angularFront);
-      items.push(frontView);
-      items.push(sideView);
-      items.push(backView);
-      items.push(angularBack);
-    }
-
     for(let i = 0; i < auto.images.length; i++) {
       let image = auto.images[i];
       items.push(new ImageItem({
@@ -135,7 +100,12 @@ export class AutoComponent implements OnInit {
       }))
     }
 
-    console.log(items);
+    if(items.length == 0) {
+      items.push(new ImageItem({
+        src: "/assets/images/fallback.png",
+        thumb: "/assets/images/fallback.png",
+      }));
+    }
     return items;
   }
 
@@ -180,17 +150,6 @@ export class AutoComponent implements OnInit {
   isCrewCab(auto: Auto) {
     const name = auto.body.cabin.toLowerCase()
     return !name.includes('crew cab')
-  }
-
-  getImage(auto: Auto): string {
-
-    if (auto.stockImage != null) {
-      return auto.stockImage.imageAngularFront;
-    }
-
-    else {
-      return auto.mainPictureUrl;
-    }
   }
 
   onBookmarkClick(id: number) {

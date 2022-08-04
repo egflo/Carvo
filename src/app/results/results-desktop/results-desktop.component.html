@@ -1,0 +1,531 @@
+
+<div class="container-main">
+  <div class="filter-container">
+    <mat-card style="margin-bottom: 20px">
+      <mat-card-header class="filter-chips">
+        <mat-card-title class="filter-chips-title">
+          <h1>Filter</h1>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+
+        <div class="filter-chips-content">
+          <mat-chip-list #chipList aria-label="Search Selection">
+            <mat-chip
+              selected [color]=""
+              *ngFor="let item of chips"
+              (removed)="remove(item)">
+              {{item.label}}
+              <button matChipRemove>
+                <mat-icon>cancel</mat-icon>
+              </button>
+            </mat-chip>
+          </mat-chip-list>
+        </div>
+
+        <div class="results-text">
+          <div *ngIf="(results$ | async) as results; else loadingText">
+            <p>{{this.results.totalElements}} Results | <span (click)="clearChips()" class="filter-link"> Clear Filters</span></p>
+          </div>
+          <ng-template #loadingText>
+            <p>Processing Query</p>
+          </ng-template>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+      </mat-card-header>
+      <mat-card-content>
+
+        <cdk-accordion class="accordion">
+          <cdk-accordion-item
+            #accordionItemLocation="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-location'"
+            [attr.aria-expanded]="accordionItemLocation.expanded"
+            [attr.aria-controls]="'accordion-body-location'">
+            <div class="accordion-item-header" (click)="accordionItemLocation.toggle()">
+              Location
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemLocation.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemLocation.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-location'"
+              [attr.aria-labelledby]="'accordion-header-location'">
+              <div class = "location-container">
+                <div class="form-row align-items-center">
+                  <div class="col-auto my-1">
+                    <div class="mb-3">
+                      <label for="postcode" class="form-label">Postcode</label>
+                      <input type="text" class="form-control" id="postcode" placeholder="90805" (change)="onPostcodeChange($event)">
+                    </div>
+                  </div>
+                  <div class="col-auto my-1">
+                    <label for="distance" class="form-label">Distance</label>
+                    <select class="form-select"  id="distance" aria-label="Default select example" (change)="onDistanceChange($event)">
+                      <option value="0"selected>Nationwide</option>
+                      <option value="10">10</option>
+                      <option value="25">25</option>
+                      <option value="50">50</option>
+                      <option value="75">75</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemYear="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-year'"
+            [attr.aria-expanded]="accordionItemYear.expanded"
+            [attr.aria-controls]="'accordion-body-year'">
+            <div class="accordion-item-header" (click)="accordionItemYear.toggle()">
+              Year
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemYear.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemYear.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-year'"
+              [attr.aria-labelledby]="'accordion-header-year'">
+              <div class = "year-container">
+                <select  id="start-year" class="form-select" aria-label="start-year" (change)="onChangeSelect($event)">
+                  <option *ngFor="let year of startYears"
+                          [value]="year"
+                          [selected]="year == defaultYear"
+                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
+                </select>
+                <select id="end-year" class="form-select" aria-label="end-year" (change)="onChangeSelect($event)">
+                  <option *ngFor="let year of endYears"
+                          [value]="year"
+                          [selected]="year == defaultYear"
+                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
+                </select>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemMake="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-make'"
+            [attr.aria-expanded]="accordionItemMake.expanded"
+            [attr.aria-controls]="'accordion-body-make'">
+            <div class="accordion-item-header" (click)="accordionItemMake.toggle()">
+              Make
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemMake.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemMake.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-make'"
+              [attr.aria-labelledby]="'accordion-header-make'">
+              <div class = "make-container">
+                <div *ngFor="let make of makes" class="form-check">
+                  <input class="form-check-input" name="make" type="checkbox" value="{{make.id}}"
+                         id="make-{{make.id}}" (change)="onChangeCheck($event)"  [checked]="make.selected">
+                  <label class="form-check-label" for="make-{{make.id}}">
+                    {{make.name}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemBody="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-body-type'"
+            [attr.aria-expanded]="accordionItemBody.expanded"
+            [attr.aria-controls]="'accordion-body-type'">
+            <div class="accordion-item-header" (click)="accordionItemBody.toggle()">
+              Body
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemBody.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemBody.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-body-type'"
+              [attr.aria-labelledby]="'accordion-header-body-type'">
+              <div class = "body-container">
+                <div *ngFor="let body of types" class="form-check">
+                  <input class="form-check-input" type="checkbox"  name="body" (change)="onChangeCheck($event)"
+                         value="{{body.id}}" id="body-type-{{body.id}}" [checked]="body.selected">
+                  <label class="form-check-label" for="body-type-{{body.id}}">
+                    {{body.type}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemFuel="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-fuel'"
+            [attr.aria-expanded]="accordionItemFuel.expanded"
+            [attr.aria-controls]="'accordion-body-fuel'">
+            <div class="accordion-item-header" (click)="accordionItemFuel.toggle()">
+              Fuel
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemFuel.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemFuel.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-fuel'"
+              [attr.aria-labelledby]="'accordion-header-fuel'">
+              <div class = "body-container">
+                <div *ngFor="let fuel of fuels" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="fuel" (change)="onChangeCheck($event)"
+                         value="{{fuel.id}}" id="fuel-type-{{fuel.id}}" [checked]="fuel.selected">
+                  <label class="form-check-label" for="fuel-type-{{fuel.id}}">
+                    {{fuel.type}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemMiles="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-miles'"
+            [attr.aria-expanded]="accordionItemMiles.expanded"
+            [attr.aria-controls]="'accordion-body-miles'">
+            <div class="accordion-item-header" (click)="accordionItemMiles.toggle()">
+              Mileage
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemMiles.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemMiles.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-body-miles'"
+              [attr.aria-labelledby]="'accordion-header-body-miles'">
+              <div class = "mileage-container">
+                <label for="mileage" class="form-label">{{mileage}} miles or fewer</label>
+                <ngx-slider [(value)]="mileage" [options]="optionsMiles" id="mileage" (userChangeEnd)="onChangeMileage($event)"></ngx-slider>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemColor="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-color'"
+            [attr.aria-expanded]="accordionItemColor.expanded"
+            [attr.aria-controls]="'accordion-body-color'">
+            <div class="accordion-item-header" (click)="accordionItemColor.toggle()">
+              Exterior Color
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemColor.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemColor.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-color'"
+              [attr.aria-labelledby]="'accordion-header-color'">
+              <div class = "color-container">
+                <label *ngFor="let color of colors"  class="container">
+                  {{color.name.charAt(0).toUpperCase() + color.name.slice(1).toLowerCase()}}
+                  <input type="checkbox" value="{{color.id}}" name="color" (change)="onChangeCheck($event)" [checked]="color.selected">
+                  <span class="checkmark" [ngStyle]="{'background-color': color.name.toLowerCase()}"></span>
+                </label>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemDrivetrain="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-drivetrain'"
+            [attr.aria-expanded]="accordionItemDrivetrain.expanded"
+            [attr.aria-controls]="'accordion-body-drivetrain'">
+            <div class="accordion-item-header" (click)="accordionItemDrivetrain.toggle()">
+              Drivetrain
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemDrivetrain.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemDrivetrain.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-drivetrain'"
+              [attr.aria-labelledby]="'accordion-header-drivetrain'">
+              <div class = "body-container">
+                <div *ngFor="let drivetrain of drivetrains" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="drivetrain" (change)="onChangeCheck($event)"
+                         value="{{drivetrain.id}}" id="drive-type-{{drivetrain.id}}" [checked]="drivetrain.selected">
+                  <label class="form-check-label" for="drive-type-{{drivetrain.id}}">
+                    {{drivetrain.name}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemTransmission="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-transmission'"
+            [attr.aria-expanded]="accordionItemTransmission.expanded"
+            [attr.aria-controls]="'accordion-body-transmission'">
+            <div class="accordion-item-header" (click)="accordionItemTransmission.toggle()">
+              Transmission
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemTransmission.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemTransmission.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-transmission'"
+              [attr.aria-labelledby]="'accordion-header-transmission'">
+              <div class = "body-container">
+                <div *ngFor="let transmission of transmissions" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="transmission" (change)="onChangeCheck($event)"
+                         value="{{transmission.type}}" id="transmission-type-{{transmission.id}}" [checked]="transmission.selected">
+                  <label class="form-check-label" for="transmission-type-{{transmission.id}}">
+                    {{transmission.description}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemPrice="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-price'"
+            [attr.aria-expanded]="accordionItemPrice.expanded"
+            [attr.aria-controls]="'accordion-body-price'">
+            <div class="accordion-item-header" (click)="accordionItemPrice.toggle()">
+              Price
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemPrice.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemPrice.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-price'"
+              [attr.aria-labelledby]="'accordion-header-price'">
+              <div class = "body-container">
+                <ngx-slider [(value)]="value" [(highValue)]="highValue" [options]="options" (userChange)="onPriceChange($event)"></ngx-slider>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            #accordionItemCondition="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-condition'"
+            [attr.aria-expanded]="accordionItemCondition.expanded"
+            [attr.aria-controls]="'accordion-body-condition'">
+            <div class="accordion-item-header" (click)="accordionItemCondition.toggle()">
+              Condition
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItemCondition.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItemCondition.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-condition'"
+              [attr.aria-labelledby]="'accordion-header-condition'">
+              <div class = "body-container">
+                <div *ngFor="let item of conditions" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="condition" (change)="onChangeCheck($event)"
+                         value="{{item.value}}" id="condition-type-{{item.name}}" [checked]="item.selected">
+                  <label class="form-check-label" for="condition-type-{{item.name}}">
+                    {{item.name}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+
+          <cdk-accordion-item
+            *ngFor="let model of models; let index = index"
+            #accordionItem="cdkAccordionItem"
+            class="accordion-item"
+            role="button"
+            tabindex="0"
+            [attr.id]="'accordion-header-model-' +  index"
+            [attr.aria-expanded]="accordionItem.expanded"
+            [attr.aria-controls]="'accordion-body-model-' + index">
+
+            <div class="accordion-item-header" (click)="accordionItem.toggle()">
+              {{model.key}} Models
+              <span class="accordion-item-description">
+            <mat-icon
+              class="accordion-item-icon"
+              [color]="'primary'"
+            >
+              {{ accordionItem.expanded ? 'expand_less'  : 'expand_more' }}</mat-icon>
+          </span>
+            </div>
+            <div
+              class="accordion-item-body"
+              role="region"
+              [style.display]="accordionItem.expanded ? '' : 'none'"
+              [attr.id]="'accordion-body-model'"
+              [attr.aria-labelledby]="'accordion-header-model-' + index">
+              <div class = "make-container">
+                <div *ngFor="let item of model.value" class="form-check">
+                  <input class="form-check-input" type="checkbox" name="model" (change)="onChangeCheck($event)"
+                         value="{{item.make.name + '_' + item.id}}" id="model-type-{{item.name}}" [checked]="item.selected">
+                  <label class="form-check-label" for="model-type-{{item.name}}">
+                    {{item.name}}
+                  </label>
+                </div>
+              </div>
+            </div>
+          </cdk-accordion-item>
+        </cdk-accordion>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+
+  <div class="results-container">
+    <div *ngIf="(results$ | async) as results; else loading">
+
+      <div class="sort-field">
+        <mat-form-field appearance="fill">
+          <mat-label>Select an option</mat-label>
+          <mat-select disableRipple matNativeControl [(ngModel)]="selectedSort" (selectionChange)="onSortChange()">
+            <mat-option *ngFor="let option of sortable" [value]="option.id">
+              {{option.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="spacer"></div>
+
+        <div class="pagination">
+          <mat-paginator [length]="results.totalElements"
+                         [pageSize]="results.size"
+                         [pageSizeOptions]="pageSizeOptions"
+                         (page)="onPageChange($event)"
+                         aria-label="Select page">
+          </mat-paginator>
+        </div>
+      </div>
+
+      <div class="data-container">
+        <div *ngFor="let auto of results.content">
+          <app-auto-card [auto]="auto" [bookmarked]="isBookmarked(auto.id)"></app-auto-card>
+        </div>
+      </div>
+    </div>
+    <ng-template #loading>
+      <mat-spinner
+        class="spinner"
+        [diameter]="100"
+        [strokeWidth]="4"></mat-spinner>
+    </ng-template>
+  </div>
+</div>
+
+
+
+
+
+
+

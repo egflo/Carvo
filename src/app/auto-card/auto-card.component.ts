@@ -21,6 +21,7 @@ export class AutoCardComponent implements OnInit {
   images$!: Observable<GalleryItem[]>;
   alertsEnabled: any;
   bookmarkId: number = 0;
+  imageSize: any = "contain";
 
   constructor(
     private route: ActivatedRoute,
@@ -41,42 +42,15 @@ export class AutoCardComponent implements OnInit {
 
 
   buildImageItems(auto: Auto): GalleryItem[] {
+
+    auto.images = auto.images.sort((a, b) => a.url.localeCompare(b.url));
+
     let items = []
-    if(auto.stockImage) {
-
-      if (auto.stockImage.imageAngularFront) {
-        items.push(new ImageItem({
-          src: auto.stockImage.imageAngularFront,
-          thumb: auto.stockImage.imageAngularFront,
-        }));
-      }
-
-      if (auto.stockImage.imageFront) {
-        items.push(new ImageItem({
-          src: auto.stockImage.imageFront,
-          thumb: auto.stockImage.imageFront,
-        }));
-      }
-      if (auto.stockImage.imageRear) {
-        items.push( new ImageItem({
-          src: auto.stockImage.imageRear,
-          thumb: auto.stockImage.imageRear,
-        }));
-      }
-
-      if (auto.stockImage.imageAngularRear) {
-        items.push( new ImageItem({
-          src: auto.stockImage.imageAngularRear,
-          thumb: auto.stockImage.imageAngularRear,
-        }));
-      }
-
-      if (auto.stockImage.imageSide) {
-        items.push( new ImageItem({
-          src: auto.stockImage.imageSide,
-          thumb: auto.stockImage.imageSide,
-        }));
-      }
+    for(let i = 0; i < auto.images.length; i++) {
+      items.push(new ImageItem({
+        src: auto.images[i].url,
+        thumb: auto.images[i].url,
+      }));
     }
 
     if(items.length == 0) {

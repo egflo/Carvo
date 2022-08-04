@@ -7,14 +7,15 @@ import {ResultsComponent} from "../results/results.component";
 import {UserProfileComponent} from "../user-profile/user-profile.component";
 import {FavoriteComponent} from "../favorite/favorite.component";
 import {ViewStateService} from "../view-state.service";
-import {ResultsMobileComponent} from "../results-mobile/results-mobile.component";
+import {ResultsMobileComponent} from "../results/results-mobile/results-mobile.component";
 import {AutoDesktopComponent} from "../auto/auto-desktop/auto-desktop.component";
 import {AutoMobileComponent} from "../auto/auto-mobile/auto-mobile.component";
+import {ResultsDesktopComponent} from "../results/results-desktop/results-desktop.component";
 
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'auto/:id', component: AutoDesktopComponent, pathMatch: 'full' },
-  { path: 'results/:id', component: ResultsComponent },
+  { path: 'results/:id', component: ResultsDesktopComponent },
   { path:'user', component: UserProfileComponent },
   { path: 'favorites', component: FavoriteComponent },
 ];
