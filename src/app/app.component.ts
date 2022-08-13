@@ -160,6 +160,26 @@ export class AppComponent {
     this.matIconRegistry.addSvgIcon(
       "audi",
       this.domSanitizer.bypassSecurityTrustResourceUrl("assets/brands/audi_icon.svg")
+    ),
+    this.matIconRegistry.addSvgIcon(
+      "convertible",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/convertible_icon.svg")
+    ),
+    this.matIconRegistry.addSvgIcon(
+      "van",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/van_icon.svg")
+    ),
+    this.matIconRegistry.addSvgIcon(
+      "wagon",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/wagon_icon.svg")
+    ),
+    this.matIconRegistry.addSvgIcon(
+      "hatchback",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/wagon_icon.svg")
+    ),
+    this.matIconRegistry.addSvgIcon(
+      "minivan",
+      this.domSanitizer.bypassSecurityTrustResourceUrl("assets/icons/van_icon.svg")
     );
   }
 

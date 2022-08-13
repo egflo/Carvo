@@ -6,6 +6,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {Location} from "@angular/common";
 import {AutoService} from "../auto/auto.service";
 import {Make} from "../api/make";
+import {BodyType} from "../api/body-type";
+import {Observable} from "rxjs";
 
 
 
@@ -33,6 +35,8 @@ export class HomeComponent implements OnInit {
   models: [String] | undefined
   modelsDisabled: boolean = true;
 
+  types$!: Observable<BodyType[]>;
+
 
   selected = new FormControl('',[Validators.required]);
   selectedModel= new FormControl({value: '', disabled: false}, [Validators.required]);
@@ -48,6 +52,9 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+
+    this.buildTypes();
+
     this.homeService.getAllMake().subscribe(makes => {
       this.makes = makes;
     });
@@ -57,6 +64,10 @@ export class HomeComponent implements OnInit {
     }  );
   }
 
+
+  buildTypes(): void {
+    this.types$ = this.homeService.getAllTypes();
+  }
 
   getAllModelsFromMake(make: String): void {
     this.modelsDisabled = true;
@@ -92,11 +103,16 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onTypeClick(type: string) {
-    this.router.navigate(['/results', type]).then(r => {
+  onTypeClick(type: number) {
+    const param = "body=" + type;
+    this.router.navigate(['/results'], {queryParams: {body: type}}).then(r => {
       console.log("navigation success");
     });
   }
 
+
+  findSVG(type: BodyType): string{
+    return type.type.toLowerCase()
+  }
 
 }

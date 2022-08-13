@@ -14,6 +14,7 @@ import {AuthService} from "../auth.service";
 import {Bookmark} from "../api/bookmark";
 import {environment} from "../../environments/environment";
 import {Model} from "../api/model";
+import {MakeModel} from "../model/make-model";
 
 
 
@@ -22,7 +23,6 @@ import {Model} from "../api/model";
 })
 export class ResultsService {
   private handleError: HandleError;
-  private URL = environment.apiUrl;
 
   private httpOptions = {
     headers: new HttpHeaders({
@@ -42,6 +42,7 @@ export class ResultsService {
   //page=${page}&limit=${limit}
   getResults(query:String): Observable<Page> {
     let url = `${environment.apiUrl}/auto/search/${encodeURI(query.toString())}`;
+    //console.log(url);
 
     return this.http.get<Page>(url,this.httpOptions).pipe(
       catchError(this.handleError<Page>(`getResults`))
@@ -88,7 +89,7 @@ export class ResultsService {
   }
 
   getTransmissions(): Observable<[Transmission]> {
-    let url = `${URL}/auto/transmission/all`;
+    let url = `${environment.apiUrl}/auto/transmission/all`;
     return this.http.get<[Transmission]>(url, this.httpOptions).pipe(
       catchError(this.handleError<[Transmission]>(`getTransmissions`))
     );
@@ -104,9 +105,24 @@ export class ResultsService {
       })
     };
 
-    let url = `${URL}/bookmark/watchlist/all`;
+    let url = `${environment.apiUrl}/bookmark/watchlist/all`;
     return this.http.get<[Bookmark]>(url, httpOptionsBookmark).pipe(
       catchError(this.handleError<[Bookmark]>(`getBookmarks`))
+    );
+  }
+
+  saveSearch(query:String): Observable<any> {
+    const http = {
+      headers: new HttpHeaders({
+        'Content-Type':  'application/json',
+        'Accept': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+        Authorization: 'Bearer ' + this.auth.getAccessToken()
+      })
+    }
+    let url = `${environment.apiUrl}/search/`;
+    return this.http.post(url, query, http).pipe(
+      catchError(this.handleError<any>(`saveSearch`))
     );
   }
 }

@@ -5,7 +5,7 @@ import {Location} from '@angular/common';
 import {PageEvent} from "@angular/material/paginator";
 import {FormBuilder} from "@angular/forms";
 import {MakeModel} from "../model/make-model";
-import {Observable, Subject} from "rxjs";
+import {Observable, of, Subject} from "rxjs";
 import {BodyModel} from "../model/body-model";
 import {FuelModel} from "../model/fuel-model";
 import {ColorModel} from "../model/color-model";
@@ -19,21 +19,39 @@ import {Direction} from "../model/direction";
 import {Bookmark} from "../api/bookmark";
 import {ModelModel} from "../model/model-model";
 import {ModelTuple} from "../model/model-tuple";
+import {
+  MatSnackBar,
+  MatSnackBarHorizontalPosition,
+  MatSnackBarVerticalPosition,
+} from '@angular/material/snack-bar';
+import {SnackbarService} from "../snackbar.service";
+
 
 @Component({
   selector: 'app-results',
   templateUrl: './results.component.html',
   styleUrls: ['./results.component.css']
 })
-export class ResultsComponent {
-  query!: String;
-
+export class ResultsComponent  {
   private url = new Subject<String>();
   private params = new Subject<URLSearchParams>();
+  horizontalPosition: MatSnackBarHorizontalPosition = 'center';
+  verticalPosition: MatSnackBarVerticalPosition = 'top';
+
+  //Initial parameters for search
+  query: String[] = [];
+  body_code: String[] = [];
+  color_code: String[] = [];
+  fuel_code: String[] = [];
+  drivetrain_code: String[] = [];
+  transmission_code: String[] = [];
+  condition_code: String[] = [];
+
 
   //Pagination
   page: number = 1;
   limit: number = 10;
+  sortDirection: Direction = Direction.ASC;
   numberOfElements: number = 0;
   pageSizeOptions: number[] = [5, 10, 25, 100];
 
@@ -45,8 +63,8 @@ export class ResultsComponent {
   endYear: String = this.defaultYear;
 
 
+  makes$!: Observable<MakeModel[]>;
   makes: MakeModel[] = [];
-  //List of list of models
   models: ModelTuple[] = [];
   types: BodyModel[] = [];
   fuels: FuelModel[] = [];
@@ -54,21 +72,19 @@ export class ResultsComponent {
   drivetrains: DrivetrainModel[] = [];
   engines: TransmissionModel[] = [];
   transmissions: TransmissionModel[] = []
-  cylinders: number[] = [ 4,  6, 8, 10, 12];
+  cylinders: number[] = [4, 6, 8, 10, 12];
   priceMin: any;
   priceMax: any;
   postcode: number = 0;
   distance: number = 0;
-
-
+  chips: SearchModel[] = [];
+  bookmarks: Bookmark[] = [];
   defaultMileage: number = 250000;
   mileage: number = this.defaultMileage;
   optionsMiles: Options = {
     floor: 0,
     ceil: 400000,
   };
-
-
   value: number = 25000;
   highValue: number = 550000;
   options: Options = {
@@ -84,7 +100,7 @@ export class ResultsComponent {
           return "$" + value;
       }
   }};
-  chips: SearchModel[] = [];
+
 
   conditions: any[] = [
     {id:1, name: 'New', value: 'isNew'},
@@ -107,32 +123,87 @@ export class ResultsComponent {
     {id: 6, name: 'Mileage High to Low'},
   ];
 
-
-  bookmarks: Bookmark[] = [];
-
   constructor(
     protected route: ActivatedRoute,
     protected router: Router,
     protected location: Location,
     protected resultsService: ResultsService,
     protected formBuilder: FormBuilder,
-    protected auth: AuthService
-  ) {}
+    protected auth: AuthService,
+    protected snackBar: SnackbarService
+  ) {
 
-
-  ngAfterViewInit(): void {
-    console.log("After view init");
-    this.fillChiplist();
   }
 
+  ngOnInit(): void {
+    const routeParams = this.route.snapshot.paramMap;
+    const queryParams = this.route.snapshot.queryParamMap;
+
+    //this.query = routeParams.get('id') || '';
+    this.query = this.router.url.slice(9, this.router.url.length).split('?')[0].split('/').map(
+      (item) => {
+        return item.toLowerCase();
+      }
+    )
+    this.page =  Number(queryParams.get('page')) || 1;
+    this.limit = Number(queryParams.get('limit')) || 10;
+    this.sortDirection = Number(queryParams.get('sortDirection')) || 1;
+
+    this.body_code = this.processParamCode(queryParams.get('body_code') || undefined);
+    this.color_code = this.processParamCode(queryParams.get('color_code') || undefined);
+    this.fuel_code = this.processParamCode(queryParams.get('fuel_code') || undefined);
+    this.drivetrain_code = this.processParamCode(queryParams.get('drivetrain_code') || undefined);
+    this.transmission_code = this.processParamCode(queryParams.get('transmission_code') || undefined);
+    this.mileage = Number(queryParams.get('mileage')) || this.defaultMileage;
+    this.priceMin = Number(queryParams.get('price_min')) || undefined;
+    this.priceMax = Number(queryParams.get('price_max')) || undefined;
+    this.postcode = Number(queryParams.get('postcode')) || 0;
+    this.distance = Number(queryParams.get('distance')) || 0;
+
+    if (this.auth.isAuthenticated()) {
+      this.resultsService.getBookmarks().subscribe(bookmarks => {
+        this.bookmarks = bookmarks;
+      });
+    }
+
+    this.buildYears();
+
+    this.buildMakes();
+
+    this.buildBodyTypes();
+
+    this.buildFuels();
+
+    this.buildColors();
+
+    this.buildDrivetrains();
+
+    this.buildTransmissions();
+
+    this.buildPrices();
+
+  }
+
+  ngAfterViewInit(): void {
+    this.fillChips();
+  }
 
   search(term: String): void {
 
   }
 
-
   login(): void {
     this.auth.login();
+  }
+
+  processParamCode(param: any): String[] {
+    let codes: string[] = [];
+    if (param) {
+      param.split("_").forEach((code: string) => {
+        codes.push(code);
+      });
+    }
+    return codes;
   }
 
   buildYears(): void {
@@ -142,14 +213,22 @@ export class ResultsComponent {
 
   buildMakes() : void {
     this.resultsService.getMakes().subscribe(makes => {
+      let options: MakeModel[] = [];
       makes = makes.sort((a, b) => { return a.name.localeCompare(b.name); });
       makes.forEach(make => {
-        this.makes.push(
-          { id: make.id, name: make.name, selected: this.query.toLowerCase() === make.name.toLowerCase() }
+        if (this.query.includes(make.name)) {
+          this.buildModels(make.id, make.name);
+        }
+        options.push(
+          { id: make.id, name: make.name, selected: this.query.includes(make.name.toLowerCase()) }
         );
       });
-      this.fillChiplist()
+      this.makes = options;
+      this.makes$ = of(options);
+      this.fillChips()
+
     });
+
   }
 
   buildModels(makeId: Number, makeName: string): void {
@@ -173,58 +252,74 @@ export class ResultsComponent {
     this.resultsService.getBodyTypes().subscribe(types => {
       for (let body of types) {
         this.types.push(
-          { id: body.id, type: body.type, selected: this.query.toLowerCase() === body.type.toLowerCase() }
+          { id: body.id, type: body.type, selected: this.query.includes(body.type.toLowerCase()) }
         );
       }
-
-      this.fillChiplist()
+      this.fillChips()
     });
   }
 
-  buildFuels() {
+  buildFuels() : void {
     this.resultsService.getFuelTypes().subscribe(fuels => {
       for (let fuel of fuels) {
         if(fuel.type.toLowerCase() !== "unknown") {
           this.fuels.push(
-            { id: fuel.id, type: fuel.type, selected: false }
+            { id: fuel.id, type: fuel.type, selected: this.fuel_code.includes(fuel.id.toString()) }
           );
         }
       }
     });
   }
 
-  buildColors() {
+  buildColors() : void {
     this.resultsService.getColors().subscribe(colors => {
       for (let color of colors) {
         this.colors.push(
-          { id: color.id, name: color.name.toLowerCase(), selected: false }
+          { id: color.id, name: color.name.toLowerCase(), selected: this.color_code.includes(color.id.toString()) }
         );
       }
     });
   }
 
-  buildDrivetrains() {
+  buildDrivetrains() : void {
     this.resultsService.getDrivetrain().subscribe(drivetrains => {
       for (let drivetrain of drivetrains) {
         if(drivetrain.name.toLowerCase() !== "n/a") {
           this.drivetrains.push(
-            { id: drivetrain.id, name: drivetrain.name, description: drivetrain.description, selected: false }
+            { id: drivetrain.id, name: drivetrain.name, description: drivetrain.description, selected: this.drivetrain_code.includes(drivetrain.id.toString()) }
           );
         }
       }
     });
   }
 
-  buildTransmissions() {this.transmissions =
+  buildTransmissions() {
+
+    this.transmissions =
     [ { id: 1, type: 'A', description:'Automatic', selected: false },
       { id: 2, type: 'M', description:'Manual',selected: false },
       { id: 3, type: 'CVT',description:'CVT', selected: false }];
   }
 
-  generateArrayYears(startYear: number, endYear: number) {
-    let years = [this.defaultYear];
+  buildPrices() : void {
+    if(this.priceMin && this.priceMax) {
+      this.highValue = this.priceMax;
+      this.value = this.priceMin;
+    }
+
+    else if(this.priceMin) {
+      this.value = this.priceMin;
+    }
+
+    else if(this.priceMax) {
+      this.highValue = this.priceMax;
+    }
+  }
+
+  generateArrayYears(startYear: number, endYear: number) : any[] {
+    let years = [ {id: 0, name: this.defaultYear, selected: true}];
     for (let i = startYear; i <= endYear; i++) {
-      years.push(String(i));
+      years.push( {id: i, name: String(i), selected: false} );
     }
     return years;
   }
@@ -248,32 +343,45 @@ export class ResultsComponent {
     const value = selectElement.value;
 
 
-    //if id is start year
     if(selectElement.id.includes("start-year")) {
-      this.startYear = value;
 
+      if(this.endYear == this.defaultYear) {
 
-    }
-    //if id is end year
-    if(selectElement.id.includes("end-year")) {
-      this.endYear = value;
+        console.log("start year selected without end year");
 
-
-      let start = this.startYear
-      let end = this.endYear
-
-      if(start != this.defaultYear && end != this.defaultYear) {
-        this.endYears = this.generateArrayYears(Number(start), Number(end));
+        this.startYear = value;
+        this.endYears = this.generateArrayYears(Number(value), new Date().getFullYear());
       }
-
-      else if (start == this.defaultYear) {
-        this.endYears = this.generateArrayYears(Number(start), Number(end));
+      else {
+        this.startYear = value;
+        this.startYears.forEach(
+          year => {
+            year.selected = year.id == value ? true : false;
+          }
+        );
       }
-
-
     }
 
-    this.fillChiplist();
+    else {
+      if(this.startYear == this.defaultYear) {
+
+        console.log("end year selected without start year");
+        this.endYear = value;
+        this.startYears = this.generateArrayYears(1989, Number(value))
+
+      }
+      else {
+        this.endYear = value;
+        this.endYears.forEach(
+          year => {
+            year.selected = year.id == value ? true : false;
+          }
+        );
+      }
+    }
+
+
+    this.fillChips();
 
     const url = this.buildURL();
     const params = this.buildParams();
@@ -286,7 +394,7 @@ export class ResultsComponent {
     const value = changeContext.value;
     this.mileage = value;
 
-    this.fillChiplist();
+    this.fillChips();
 
     const url = this.buildURL();
     const params = this.buildParams();
@@ -356,7 +464,7 @@ export class ResultsComponent {
     const url = this.buildURL();
     const params = this.buildParams();
 
-    this.fillChiplist();
+    this.fillChips();
     this.search(`${url}?${params.toString()}`);
 
   }
@@ -385,8 +493,6 @@ export class ResultsComponent {
 
   buildParams(page: number = 1, limit: number = 10): URLSearchParams {
     let params: URLSearchParams = new URLSearchParams();
-
-
     let codes = '';
 
     let models_selected = []
@@ -502,14 +608,15 @@ export class ResultsComponent {
   }
 
   onPostcodeChange($event: any) {
+
     const selectElement = $event.target as HTMLInputElement;
     this.postcode = Number(selectElement.value);
 
     const url = this.buildURL();
     const params = this.buildParams();
 
+    this.fillChips();
     this.search(`${url}?${params.toString()}`);
-
   }
 
   onDistanceChange($event: any) {
@@ -519,6 +626,7 @@ export class ResultsComponent {
     const url = this.buildURL();
     const params = this.buildParams();
 
+    this.fillChips();
     this.search(`${url}?${params.toString()}`);
   }
 
@@ -534,10 +642,47 @@ export class ResultsComponent {
   }
 
   remove(item: SearchModel): void {
+
+    console.log(item);
+
+    if(item.type == 'postcode') {
+      this.postcode = 0;
+      this.distance = 0;
+    }
+
+    if(item.type == 'start_year') {
+      this.startYear = this.defaultYear;
+      this.startYears.map(y => y.selected = false);
+    }
+
+    if(item.type == 'end_year') {
+      this.endYear = this.defaultYear;
+      this.endYears.map(y => y.selected = false);
+    }
+
+    if(item.type == 'span_year') {
+      this.startYear = this.defaultYear;
+      this.endYear = this.defaultYear;
+
+      this.startYears.map(y => y.selected = false);
+      this.endYears.map(y => y.selected = false);
+    }
+
     if(item.type === 'make') {
       let object = this.makes.find(m => m.id === item.id);
       object!.selected = !object!.selected;
+
+      this.models = this.models.filter(m => m.key != item.label);
+
     }
+
+    if(item.type === 'model') {
+      for (let model of this.models) {
+        let object = model.value.find(m => m.id === item.id);
+        object!.selected = !object!.selected;
+      }
+    }
+
     if(item.type === 'body') {
       let object = this.types.find(t => t.id === item.id);
       object!.selected = !object!.selected;
@@ -571,13 +716,14 @@ export class ResultsComponent {
       this.mileage = this.defaultMileage;
     }
 
-    this.fillChiplist();
+    this.fillChips();
   }
 
-  fillChiplist() {
+  fillChips() {
     this.chips = [];
 
     let makes = this.makes.filter(m => m.selected);
+
     let types = this.types.filter(t => t.selected);
     let fuels = this.fuels.filter(f => f.selected);
     let colors = this.colors.filter(c => c.selected);
@@ -594,6 +740,20 @@ export class ResultsComponent {
           selected: true
         }
       );
+    }
+
+    for (let model of this.models) {
+      let selected = model.value.filter(m => m.selected);
+      for (let m of selected) {
+        this.chips.push(
+          {
+            id: m.id,
+            label: m.name,
+            type: 'model',
+            selected: true
+          }
+        );
+      }
     }
 
     for (let type of types) {
@@ -673,12 +833,34 @@ export class ResultsComponent {
       );
     }
 
+    if(this.postcode  !== 0 && this.distance === 0) {
+      this.chips.push(
+        {
+          id: this.postcode,
+          label: `${this.postcode}`,
+          type: 'postcode',
+          selected: true
+        }
+      );
+    }
+
+    if(this.postcode  !== 0 && this.distance !== 0) {
+      this.chips.push(
+        {
+          id: this.postcode,
+          label: `within ${this.distance} miles of ${this.postcode}`,
+          type: 'postcode',
+          selected: true
+        }
+      );
+    }
+
     if(this.startYear !== this.defaultYear && this.endYear !== this.defaultYear) {
       this.chips.push(
         {
           id: 0,
           label: this.startYear + ' - ' + this.endYear,
-          type: 'start_year',
+          type: 'span_year',
           selected: true
         }
       );
@@ -778,7 +960,26 @@ export class ResultsComponent {
   }
 
   isBookmarked(id: number): boolean {
-
     return this.bookmarks.some(b => b.autoId === id);
+  }
+
+  onSearchSave(): void {
+
+    if(!this.auth.isAuthenticated()) {
+      //this.snackBar.
+      this.snackBar.openSnackBar('You must be logged in to save searches');
+    }
+    else {
+      const url = this.buildURL();
+      const params = this.buildParams();
+
+      this.resultsService.saveSearch(`${url}?${params.toString()}`).subscribe(
+        data => {
+          console.log(data);
+        }
+      )
+    }
+
+
   }
 }

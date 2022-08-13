@@ -44,28 +44,24 @@
 
   </form>
 
-  <div class = "types-container">
-    <div class ="type-container" (click)="onTypeClick('suv')">
-      <mat-icon svgIcon="suv"></mat-icon>
-      <p class="type-text">SUV</p>
-    </div>
-    <div class ="type-container" (click)="onTypeClick('coupe')">
-      <mat-icon svgIcon="coupe"></mat-icon>
-      <p class="type-text">Coupe</p>
-    </div>
-    <div class ="type-container" (click)="onTypeClick('sedan')">
-      <mat-icon svgIcon="sedan"></mat-icon>
-      <p class="type-text">Sedan</p>
-    </div>
-    <div class ="type-container" (click)="onTypeClick('truck')">
-      <mat-icon svgIcon="truck"></mat-icon>
-      <p class="type-text">Truck</p>
-    </div>
-    <div class ="type-container" (click)="onTypeClick('suv')">
-      <mat-icon svgIcon="crossover"></mat-icon>
-      <p class="type-text">Crossover</p>
+
+  <div class="types-container"*ngIf="types$! | async as types; else loading">
+    <div class="type-container" *ngFor="let type of types" (click)="onTypeClick(type.id)">
+        <mat-icon svgIcon="{{findSVG(type)}}"></mat-icon>
+        <p class="type-text">{{type.type}}</p>
     </div>
   </div>
+  <ng-template #loading>
+    <mat-progress-spinner
+      class="mat-progress-spinner"
+      [diameter]="100"
+      [strokeWidth]="4"
+      mode="indeterminate"
+      color="primary">
+    </mat-progress-spinner>
+  </ng-template>
+
+
 
   <div class = "types-container">
     <div class ="type-container" id="chevrolet" (click)="onBrandClick('chevrolet')">

@@ -8,6 +8,8 @@ import {PageEvent} from "@angular/material/paginator";
 import {Auto} from "../../api/auto";
 import {MatDrawerContainer, MatSidenavContainer} from "@angular/material/sidenav";
 import {ResultsComponent} from "../results.component";
+import {MatSnackBar} from "@angular/material/snack-bar";
+import {SnackbarService} from "../../snackbar.service";
 
 @Component({
   selector: 'app-results-mobile',
@@ -32,33 +34,18 @@ export class ResultsMobileComponent extends ResultsComponent implements OnInit {
 
 
   constructor(
-     route: ActivatedRoute,
-     router: Router,
-     location: Location,
-     resultsService: ResultsService,
-     formBuilder: FormBuilder,
-     auth: AuthService
+    route: ActivatedRoute,
+    router: Router,
+    location: Location,
+    resultsService: ResultsService,
+    formBuilder: FormBuilder,
+    auth: AuthService,
+    snackBar: SnackbarService
   ) {
-    super(route, router, location, resultsService, formBuilder, auth);
+    super(route, router, location, resultsService, formBuilder, auth, snackBar);
   }
 
-
-  ngOnInit(): void {
-    const routeParams = this.route.snapshot.paramMap;
-    const queryParams = this.route.snapshot.queryParamMap;
-
-    this.query = routeParams.get('id') || '';
-    this.page =  Number(queryParams.get('page')) || 1;
-    this.limit = Number(queryParams.get('limit')) || 10;
-
-
-    if(this.auth.isAuthenticated()) {
-      this.resultsService.getBookmarks().subscribe(bookmarks => {
-        this.bookmarks = bookmarks;
-      })
-    }
-
-
+  override ngAfterViewInit() {
     let params = this.buildParams()
     this.resultsService.getResults(this.query + "?" + params.toString()).subscribe(results => {
       this.array = results.content;
@@ -69,23 +56,7 @@ export class ResultsMobileComponent extends ResultsComponent implements OnInit {
     } , error => {
       console.log(error);
     });
-
-
-    this.buildYears();
-
-    this.buildMakes();
-
-    this.buildBodyTypes();
-
-    this.buildFuels();
-
-    this.buildColors();
-
-    this.buildDrivetrains();
-
-    this.buildTransmissions();
   }
-
 
   override search(term: String, scrollable: boolean = false): void {
     this.loading = true;

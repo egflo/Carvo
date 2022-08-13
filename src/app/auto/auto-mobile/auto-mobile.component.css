@@ -27,6 +27,13 @@
   left: 2rem;
   z-index: 1;
   cursor: pointer;
+
+  background: white;
+  border-radius: 50%;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 

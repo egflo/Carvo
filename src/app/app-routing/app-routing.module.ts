@@ -15,7 +15,10 @@ import {ResultsDesktopComponent} from "../results/results-desktop/results-deskto
 const routes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'auto/:id', component: AutoDesktopComponent, pathMatch: 'full' },
-  { path: 'results/:id', component: ResultsDesktopComponent },
+  { path: 'results', children: [
+    { path: '', component: ResultsDesktopComponent },
+    { path: '**', component: ResultsDesktopComponent },
+  ] },
   { path:'user', component: UserProfileComponent },
   { path: 'favorites', component: FavoriteComponent },
 ];
@@ -23,7 +26,8 @@ const routes: Routes = [
 const mobileRoutes: Routes = [
   { path: '', component: HomeComponent, pathMatch: 'full' },
   { path: 'auto/:id', component: AutoMobileComponent, pathMatch: 'full' },
-  { path: 'results/:id', component: ResultsMobileComponent },
+  { path: 'results/**', component: ResultsMobileComponent },
+  { path: 'results', component: ResultsMobileComponent },
   { path:'user', component: UserProfileComponent },
   { path: 'favorites', component: FavoriteComponent },
 ];

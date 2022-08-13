@@ -4,7 +4,14 @@
     <mat-card style="margin-bottom: 20px">
       <mat-card-header class="filter-chips">
         <mat-card-title class="filter-chips-title">
-          <h1>Filter</h1>
+          <h1>Your Search</h1>
+          <button class="favorite-button"
+                  mat-icon-button
+                  [color]= "'primary'"
+                  aria-label="Save Search"
+                  (click)="onSearchSave()">
+            <mat-icon>favorite_outline</mat-icon>
+          </button>
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -39,7 +46,6 @@
       <mat-card-header>
       </mat-card-header>
       <mat-card-content>
-
         <cdk-accordion class="accordion">
           <cdk-accordion-item
             #accordionItemLocation="cdkAccordionItem"
@@ -115,15 +121,19 @@
               <div class = "year-container">
                 <select  id="start-year" class="form-select" aria-label="start-year" (change)="onChangeSelect($event)">
                   <option *ngFor="let year of startYears"
-                          [value]="year"
-                          [selected]="year == defaultYear"
-                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
+                          [value]="year.id"
+                          [selected]="year.selected"
+                          [defaultSelected]="year.id == 0">
+                    {{ year.name }}
+                  </option>
                 </select>
                 <select id="end-year" class="form-select" aria-label="end-year" (change)="onChangeSelect($event)">
                   <option *ngFor="let year of endYears"
-                          [value]="year"
-                          [selected]="year == defaultYear"
-                          [defaultSelected]="year === defaultYear" >{{ year }}</option>
+                          [value]="year.id"
+                          [selected]="year.selected"
+                          [defaultSelected]="year.id == 0">
+                    {{ year.name }}
+                  </option>
                 </select>
               </div>
             </div>
@@ -482,10 +492,8 @@
     </mat-card>
   </div>
 
-
   <div class="results-container">
     <div *ngIf="(results$ | async) as results; else loading">
-
       <div class="sort-field">
         <mat-form-field appearance="fill">
           <mat-label>Select an option</mat-label>
@@ -495,9 +503,7 @@
             </mat-option>
           </mat-select>
         </mat-form-field>
-
         <div class="spacer"></div>
-
         <div class="pagination">
           <mat-paginator [length]="results.totalElements"
                          [pageSize]="results.size"
@@ -524,7 +530,9 @@
 </div>
 
 
-
+<ng-template #loading>
+  <div>Loading…</div>
+</ng-template>
 
 
 

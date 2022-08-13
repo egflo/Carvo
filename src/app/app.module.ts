@@ -53,6 +53,8 @@ import {MatRadioModule} from "@angular/material/radio";
 import { AutoMobileComponent } from './auto/auto-mobile/auto-mobile.component';
 import { AutoDesktopComponent } from './auto/auto-desktop/auto-desktop.component';
 import { ResultsDesktopComponent } from './results/results-desktop/results-desktop.component';
+import {SnackbarService} from "./snackbar.service";
+import {MatSnackBar} from "@angular/material/snack-bar";
 
 @NgModule({
   declarations: [
@@ -117,6 +119,9 @@ import { ResultsDesktopComponent } from './results/results-desktop/results-deskt
     MessageService,
     AuthService,
     ViewStateService,
+    SnackbarService,
+    MatSnackBar
+
   ],
   bootstrap: [AppComponent]
 })
