@@ -103,11 +103,17 @@ export class HomeComponent implements OnInit {
     });
   }
 
-  onTypeClick(type: number) {
-    const param = "body=" + type;
-    this.router.navigate(['/results'], {queryParams: {body: type}}).then(r => {
+  onTypeClick(type: BodyType) {
+
+    console.log(type);
+    this.router.navigate(['/results', type.type]).then(r => {
       console.log("navigation success");
     });
+
+    const param = "body=" + type;
+    //this.router.navigate(['/results'], {queryParams: {body: type}}).then(r => {
+     // console.log("navigation success");
+    //});
   }
 
 

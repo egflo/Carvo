@@ -25,6 +25,8 @@ import {
   MatSnackBarVerticalPosition,
 } from '@angular/material/snack-bar';
 import {SnackbarService} from "../snackbar.service";
+import {MatDialog, MatDialogRef} from '@angular/material/dialog';
+import {DialogComponent} from "../dialog/dialog.component";
 
 
 @Component({
@@ -130,7 +132,8 @@ export class ResultsComponent  {
     protected resultsService: ResultsService,
     protected formBuilder: FormBuilder,
     protected auth: AuthService,
-    protected snackBar: SnackbarService
+    protected snackBar: SnackbarService,
+    public dialog: MatDialog
   ) {
 
   }
@@ -149,14 +152,14 @@ export class ResultsComponent  {
     this.limit = Number(queryParams.get('limit')) || 10;
     this.sortDirection = Number(queryParams.get('sortDirection')) || 1;
 
-    this.body_code = this.processParamCode(queryParams.get('body_code') || undefined);
-    this.color_code = this.processParamCode(queryParams.get('color_code') || undefined);
-    this.fuel_code = this.processParamCode(queryParams.get('fuel_code') || undefined);
-    this.drivetrain_code = this.processParamCode(queryParams.get('drivetrain_code') || undefined);
-    this.transmission_code = this.processParamCode(queryParams.get('transmission_code') || undefined);
+    this.body_code = this.processParamCode(queryParams.get('bodyCode') || undefined);
+    this.color_code = this.processParamCode(queryParams.get('colorCode') || undefined);
+    this.fuel_code = this.processParamCode(queryParams.get('fuelCode') || undefined);
+    this.drivetrain_code = this.processParamCode(queryParams.get('drivetrainCode') || undefined);
+    this.transmission_code = this.processParamCode(queryParams.get('transmissionCode') || undefined);
     this.mileage = Number(queryParams.get('mileage')) || this.defaultMileage;
-    this.priceMin = Number(queryParams.get('price_min')) || undefined;
-    this.priceMax = Number(queryParams.get('price_max')) || undefined;
+    this.priceMin = Number(queryParams.get('priceMin')) || undefined;
+    this.priceMax = Number(queryParams.get('priceMax')) || undefined;
     this.postcode = Number(queryParams.get('postcode')) || 0;
     this.distance = Number(queryParams.get('distance')) || 0;
 
@@ -249,6 +252,9 @@ export class ResultsComponent  {
   }
 
   buildBodyTypes(): void {
+
+    console.log(this.body_code);
+
     this.resultsService.getBodyTypes().subscribe(types => {
       for (let body of types) {
         this.types.push(
@@ -506,7 +512,7 @@ export class ResultsComponent  {
     }
 
     if(codes.length > 0) {
-      params.set('model_code', codes);
+      params.set('modelCode', codes);
     }
 
     let selectedTypes = this.types.filter(t => t.selected);
@@ -517,7 +523,7 @@ export class ResultsComponent  {
 
     if(selectedTypes.length > 0) {
       codes = codes.substring(0, codes.length - 1);
-      params.append('body_code', codes);
+      params.append('bodyCode', codes);
     }
 
 
@@ -529,7 +535,7 @@ export class ResultsComponent  {
 
     if(selectedFuels.length > 0) {
       codes = codes.substring(0, codes.length - 1);
-      params.append('fuel_code', codes);
+      params.append('fuelCode', codes);
     }
 
     let selectedColors = this.colors.filter(c => c.selected);
@@ -540,7 +546,7 @@ export class ResultsComponent  {
 
     if(selectedColors.length > 0) {
       codes = codes.substring(0, codes.length - 1);
-      params.append('color_code', codes);
+      params.append('colorCode', codes);
     }
 
     let selectedDrivetrains = this.drivetrains.filter(d => d.selected);
@@ -551,7 +557,7 @@ export class ResultsComponent  {
 
     if(selectedDrivetrains.length > 0) {
       codes = codes.substring(0, codes.length - 1);
-      params.append('drivetrain_code', codes);
+      params.append('drivetrainCode', codes);
     }
 
     let selectedTransmissions = this.transmissions.filter(t => t.selected);
@@ -562,7 +568,7 @@ export class ResultsComponent  {
 
     if(selectedTransmissions.length > 0) {
       codes = codes.substring(0, codes.length - 1);
-      params.append('transmission_code', codes);
+      params.append('transmissionCode', codes);
     };
 
     if(this.postcode !== 0) {
@@ -581,22 +587,22 @@ export class ResultsComponent  {
 
     if(selectedConditions.length > 0) {
       codes = codes.substring(0, codes.length - 1);
-      params.append('condition_code', codes);
+      params.append('conditionCode', codes);
     }
 
     this.page = page;
     this.limit = limit;
 
-    params.append('price_min', this.value.toString());
-    params.append('price_max', this.highValue.toString());
+    params.append('priceMin', this.value.toString());
+    params.append('priceMax', this.highValue.toString());
 
     params.append('mileage', this.mileage.toString());
 
     if(this.startYear !== this.defaultYear) {
-      params.append('start_year', this.startYear.toString());
+      params.append('startYear', this.startYear.toString());
     }
     if(this.endYear !== this.defaultYear) {
-      params.append('end_year', this.endYear.toString());
+      params.append('endYear', this.endYear.toString());
     }
 
     params.append('page', this.page.toString());
@@ -963,23 +969,30 @@ export class ResultsComponent  {
     return this.bookmarks.some(b => b.autoId === id);
   }
 
-  onSearchSave(): void {
-
+  openDialog(): void {
     if(!this.auth.isAuthenticated()) {
-      //this.snackBar.
       this.snackBar.openSnackBar('You must be logged in to save searches');
     }
     else {
       const url = this.buildURL();
       const params = this.buildParams();
 
-      this.resultsService.saveSearch(`${url}?${params.toString()}`).subscribe(
-        data => {
-          console.log(data);
+      const dialogRef = this.dialog.open(DialogComponent, {
+        width: '250px',
+        data: {
+          query: `${url}?${params.toString()}`
         }
-      )
-    }
+      });
 
+      dialogRef.afterClosed().subscribe(result => {
+        if(result) {
+          this.snackBar.openSnackBar('Search saved');
+        }
+        else {
+          this.snackBar.openSnackBar('Search not saved');
+        }
+      });
+    }
 
   }
 }

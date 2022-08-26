@@ -1,4 +1,24 @@
 <div *ngIf="show" class="favorites">
+  <p class="title">Saved Searches</p>
+
+  <div>
+    <mat-chip-list aria-label="search selection">
+      <mat-chip
+        color="primary"
+        *ngFor="let search of searches"
+        (removed)="remove(search)"
+        (click)="onClick(search)"
+        routerLink="/results/{{search.query}}"
+        selected>
+        {{search.description}}
+        <button matChipRemove>
+          <mat-icon>cancel</mat-icon>
+        </button>
+      </mat-chip>
+    </mat-chip-list>
+  </div>
+
+
   <p class="title">Saved Listings</p>
   <div
     class="search-results"

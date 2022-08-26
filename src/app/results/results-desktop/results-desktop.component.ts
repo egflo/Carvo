@@ -9,6 +9,7 @@ import {Observable} from "rxjs";
 import {Page} from "../../api/page";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackbarService} from "../../snackbar.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-results-desktop',
@@ -25,9 +26,10 @@ export class ResultsDesktopComponent extends ResultsComponent  {
      resultsService: ResultsService,
      formBuilder: FormBuilder,
      auth: AuthService,
-     snackBar: SnackbarService
+     snackBar: SnackbarService,
+     dialog: MatDialog
   ) {
-    super(route, router, location, resultsService, formBuilder, auth, snackBar);
+    super(route, router, location, resultsService, formBuilder, auth, snackBar,dialog);
   }
 
 
@@ -44,6 +46,5 @@ export class ResultsDesktopComponent extends ResultsComponent  {
     window.history.pushState({}, '', '/results/' + term);
     this.results$ = this.resultsService.getResults(term);
   }
-
 
 }

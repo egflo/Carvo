@@ -6,6 +6,7 @@ import {Observable} from "rxjs";
 import {Page} from "../api/page";
 import {environment} from "../../environments/environment";
 import {catchError} from "rxjs/operators";
+import {Search} from "../api/search";
 
 @Injectable({
   providedIn: 'root'
@@ -33,4 +34,19 @@ export class FavoriteService {
     return this.http.get<Page>(url, this.httpOptions).pipe(
       catchError(this.handleError<Page>(`getFavorite`))
     );}
+
+  getSearchlist(): Observable<[Search]> {
+    let url = `${environment.apiUrl}/search/`;
+    return this.http.get<[Search]>(url, this.httpOptions).pipe(
+      catchError(this.handleError<[Search]>(`getSearhlist`))
+    );
+  }
+
+  deleteSearch(search: Search) {
+    let url = `${environment.apiUrl}/search/${search.id}`;
+    return this.http.delete(url, this.httpOptions).pipe(
+      catchError(this.handleError<any>(`deleteSearch`))
+    );
+  }
 }
+

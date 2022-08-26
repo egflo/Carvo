@@ -10,6 +10,7 @@ import {MatDrawerContainer, MatSidenavContainer} from "@angular/material/sidenav
 import {ResultsComponent} from "../results.component";
 import {MatSnackBar} from "@angular/material/snack-bar";
 import {SnackbarService} from "../../snackbar.service";
+import {MatDialog} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-results-mobile',
@@ -40,9 +41,10 @@ export class ResultsMobileComponent extends ResultsComponent implements OnInit {
     resultsService: ResultsService,
     formBuilder: FormBuilder,
     auth: AuthService,
-    snackBar: SnackbarService
+    snackBar: SnackbarService,
+    dialog: MatDialog
   ) {
-    super(route, router, location, resultsService, formBuilder, auth, snackBar);
+    super(route, router, location, resultsService, formBuilder, auth, snackBar,dialog);
   }
 
   override ngAfterViewInit() {

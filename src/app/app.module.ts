@@ -55,6 +55,9 @@ import { AutoDesktopComponent } from './auto/auto-desktop/auto-desktop.component
 import { ResultsDesktopComponent } from './results/results-desktop/results-desktop.component';
 import {SnackbarService} from "./snackbar.service";
 import {MatSnackBar} from "@angular/material/snack-bar";
+import {MatDialog, MatDialogModule} from "@angular/material/dialog";
+import { DialogComponent } from './dialog/dialog.component';
+import { SearchChipComponent } from './search-chip/search-chip.component';
 
 @NgModule({
   declarations: [
@@ -71,6 +74,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     AutoMobileComponent,
     AutoDesktopComponent,
     ResultsDesktopComponent,
+    DialogComponent,
+    SearchChipComponent,
   ],
   imports: [
     BrowserModule,
@@ -112,6 +117,7 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     MatProgressSpinnerModule,
     MatExpansionModule,
     MatRadioModule,
+    MatDialogModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthHttpInterceptor, multi: true },
@@ -120,7 +126,8 @@ import {MatSnackBar} from "@angular/material/snack-bar";
     AuthService,
     ViewStateService,
     SnackbarService,
-    MatSnackBar
+    MatSnackBar,
+    MatDialog
 
   ],
   bootstrap: [AppComponent]

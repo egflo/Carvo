@@ -3,6 +3,8 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "../auth.service";
 import {Bookmark} from "../api/bookmark";
 import {FavoriteService} from "./favorite.service";
+import {Search} from "../api/search";
+import {SnackbarService} from "../snackbar.service";
 
 @Component({
   selector: 'app-favorite',
@@ -22,11 +24,14 @@ export class FavoriteComponent implements OnInit {
   direction = "";
   modalOpen = false;
 
+  searches = [] as any[];
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private auth: AuthService,
-    private service: FavoriteService
+    private service: FavoriteService,
+    protected snackBar: SnackbarService,
   ) {
 
   }
@@ -34,6 +39,7 @@ export class FavoriteComponent implements OnInit {
   ngOnInit(): void {
     if(this.auth.isAuthenticated()) {
       this.getBookmark();
+      this.getSearchlist();
     }
   }
 
@@ -46,8 +52,17 @@ export class FavoriteComponent implements OnInit {
     this.getBookmark();
   }
 
+  getSearchlist() : void {
+    this.service.getSearchlist().subscribe(
+      data => {
+        console.log("Get Searchlist Success");
+        this.searches = data;
+        console.log(this.searches);
+      }
+    )
+  }
+
   getBookmark() : void {
-    console.log(this.page);
     this.loading = true;
     this.service.getWatchlist(this.page).subscribe(
       data => {
@@ -59,5 +74,25 @@ export class FavoriteComponent implements OnInit {
         this.loading = false;
       }
     )
+  }
+
+  remove(search: Search) {
+
+    this.service.deleteSearch(search).subscribe(
+      data => {
+        this.snackBar.openSnackBar("Search removed from watchlist");
+        this.searches = this.searches.filter(s => s !== search);
+      })
+
+  }
+
+  onClick(search: Search) {
+    const query = search.query.split("?")
+    //const path = "/results/" + search.query;
+    console.log(query);
+    const url = encodeURI(search.query);
+    //this.router.navigate(['/results', url]);
+    //this.router.navigate(['/results' + url]);
+
   }
 }
